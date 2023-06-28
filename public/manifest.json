@@ -1,0 +1,17 @@
+{
+	"name": "Lecture Master",
+	"description": "Makes watching lectures more efficient!",
+	"version": "0.1",
+	"manifest_version": 3,
+	"action": {
+		"default_popup": "popup.html"
+	},
+	"permissions": [
+		"storage",
+		"scripting"
+	],
+	"background": {
+		"service_worker": "background.bundle.js"
+	},
+	"options_page": "options.html"
+}
