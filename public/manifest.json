@@ -8,10 +8,24 @@
 	},
 	"permissions": [
 		"storage",
-		"scripting"
+		"scripting",
+		"activeTab",
+		"tabs",
+		"tabCapture",
+		"alarms"
 	],
-	"background": {
-		"service_worker": "background.bundle.js"
-	},
-	"options_page": "options.html"
+	"content_scripts": [
+		{
+			"matches": [
+				"<all_urls>"
+			],
+			"js": [
+				"contentScript.bundle.js"
+			]
+		}
+	],
+	"options_ui": {
+		"page": "options.html",
+		"open_in_tab": true
+	}
 }

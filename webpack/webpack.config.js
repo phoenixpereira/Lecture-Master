@@ -8,7 +8,7 @@ module.exports = (env) => {
 		// Mode is forced to production because Chrome does not allow unsafe-eval in extensions.
 		mode: 'production',
 		entry: {
-			background: path.resolve(__dirname, '..', 'src', 'background.ts'),
+			contentScript: path.resolve(__dirname, '..', 'src', 'contentScript.ts'),
 			popup: path.resolve(__dirname, '..', 'src', 'popup', 'popup.ts'),
 			options: path.resolve(__dirname, '..', 'src', 'options', 'options.ts'),
 		},
