@@ -1,13 +1,29 @@
+// Initialize variables
 let audioContext: AudioContext | undefined;
 let source: MediaElementAudioSourceNode | undefined;
 let analyser: AnalyserNode | undefined;
+let gainNode: GainNode | undefined;
 let isPausedOrEnded: boolean = false;
+let currentPlaybackRate: number = 1;
+let targetPlaybackRate: number = 1;
+let isTransitioning: boolean = false;
 
+// Transition settings
+const transitionDuration: number = 0.25; // Duration of the transition in seconds
+const transitionInterval: number = 10; // Interval between transition steps in milliseconds
+
+// Silence detection settings
+let silenceCounter: number = 0;
+const silenceThreshold: number = -5.9; // Threshold for silence in decibels
+const requiredSilenceFrames: number = 3 // Number of frames required for silence
+
+// Create the audio context and gain node
 function createAudioContext() {
-    console.log("createAudioContext called");
-    audioContext = new (window.AudioContext)();
+    audioContext = new window.AudioContext();
+    gainNode = audioContext.createGain();
 }
 
+// Get the video volume and adjust playback rate
 function getVideoVolume(video: HTMLMediaElement) {
     if (!audioContext) {
         createAudioContext();
@@ -17,7 +33,8 @@ function getVideoVolume(video: HTMLMediaElement) {
         source = audioContext!.createMediaElementSource(video);
         analyser = audioContext!.createAnalyser();
         source.connect(analyser);
-        analyser.connect(audioContext!.destination);
+        analyser.connect(gainNode!);
+        gainNode!.connect(audioContext!.destination);
     }
 
     const bufferLength = analyser.frequencyBinCount;
@@ -27,21 +44,63 @@ function getVideoVolume(video: HTMLMediaElement) {
 
     const maxAmplitude = Math.max(...dataArray);
     const volumeInDecibels = 20 * Math.log10(maxAmplitude / 255);
-    if (volumeInDecibels.toFixed(2) === "-5.99") {
-        console.log("Video is silent");
-    }
-    else {
-        console.log('Video Volume (dB):', volumeInDecibels.toFixed(2));
-    }
+    const threshold = -5.9;
 
+    if (volumeInDecibels >= silenceThreshold) {
+        silenceCounter = 0;
+        setTargetPlaybackRate(1);
+        console.log("1x");
+    } else {
+        if (silenceCounter >= requiredSilenceFrames) {
+            setTargetPlaybackRate(2);
+            console.log("2x");
+        } else {
+            setTargetPlaybackRate(1);
+            console.log("1x");
+        }
+        silenceCounter++;
+    }
 
     if (!isPausedOrEnded) {
         setTimeout(() => {
             getVideoVolume(video);
-        }, 250); // Run the function again after 1 second
+        }, 200); // Run the function again after 200 milliseconds
     }
 }
 
+// Set the target playback rate
+function setTargetPlaybackRate(rate: number) {
+    targetPlaybackRate = Math.max(0.5, Math.min(2, rate)); // Limit target rate to supported range (0.5 to 2)
+    if (isTransitioning) return; // Ignore if transition is already in progress
+    startPlaybackTransition();
+}
+
+// Perform the playback rate transition
+function startPlaybackTransition() {
+    isTransitioning = true;
+    const totalSteps = Math.ceil(transitionDuration * 1000 / transitionInterval);
+    const playbackRateStep = (targetPlaybackRate - currentPlaybackRate) / totalSteps;
+    let stepCount = 0;
+
+    function updatePlaybackRate() {
+        stepCount++;
+        currentPlaybackRate += playbackRateStep;
+
+        if (stepCount >= totalSteps) {
+            currentPlaybackRate = targetPlaybackRate;
+            isTransitioning = false;
+            videoElement!.playbackRate = currentPlaybackRate;
+            return;
+        }
+
+        videoElement!.playbackRate = currentPlaybackRate;
+        setTimeout(updatePlaybackRate, transitionInterval);
+    }
+
+    updatePlaybackRate();
+}
+
+// Handle video events (play, pause, ended)
 function handleVideoEvents(event: Event) {
     const video = event.target as HTMLMediaElement;
 
@@ -62,11 +121,24 @@ function handleVideoEvents(event: Event) {
 }
 
 // Find the first video element on the page
-const videoElement = document.querySelector('video');
+let videoElement: HTMLVideoElement | null = null;
 
-if (videoElement) {
-    // Attach event listeners to the video element
-    videoElement.addEventListener('play', handleVideoEvents);
-    videoElement.addEventListener('pause', handleVideoEvents);
-    videoElement.addEventListener('ended', handleVideoEvents);
-}
+// Loops through the mutations in the mutations list and finds video element
+const observer = new MutationObserver((mutationsList) => {
+    for (const mutation of mutationsList) {
+        if (mutation.type === 'childList') {
+            videoElement = document.querySelector('video');
+
+            if (videoElement) {
+                observer.disconnect();
+                videoElement.addEventListener('play', handleVideoEvents);
+                videoElement.addEventListener('pause', handleVideoEvents);
+                videoElement.addEventListener('ended', handleVideoEvents);
+                break;
+            }
+        }
+    }
+});
+
+// Start observing changes in the body element
+observer.observe(document.body, { childList: true, subtree: true });
