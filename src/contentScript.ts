@@ -1,4 +1,4 @@
-// Initialize variables
+// Initialise variables
 let audioContext: AudioContext | undefined;
 let source: MediaElementAudioSourceNode | undefined;
 let analyser: AnalyserNode | undefined;
@@ -9,13 +9,13 @@ let targetPlaybackRate: number = 1;
 let isTransitioning: boolean = false;
 
 // Transition settings
-const transitionDuration: number = 0.25; // Duration of the transition in seconds
-const transitionInterval: number = 10; // Interval between transition steps in milliseconds
+let transitionDuration: number = 0.25; // Duration of the transition in seconds
+let transitionInterval: number = 10; // Interval between transition steps in milliseconds
 
 // Silence detection settings
 let silenceCounter: number = 0;
-const silenceThreshold: number = -5.9; // Threshold for silence in decibels
-const requiredSilenceFrames: number = 3 // Number of frames required for silence
+let silenceThreshold: number = -5.9; // Threshold for silence in decibels
+let requiredSilenceFrames: number = 3 // Number of frames required for silence
 
 // Create the audio context and gain node
 function createAudioContext() {
@@ -45,6 +45,7 @@ function getVideoVolume(video: HTMLMediaElement) {
     const maxAmplitude = Math.max(...dataArray);
     const volumeInDecibels = 20 * Math.log10(maxAmplitude / 255);
     const threshold = -5.9;
+    console.log(targetPlaybackRate);
 
     if (volumeInDecibels >= silenceThreshold) {
         silenceCounter = 0;
