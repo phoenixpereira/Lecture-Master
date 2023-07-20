@@ -1,23 +1,26 @@
 {
-    "name": "Lecture Master",
-    "description": "Makes watching lectures more efficient!",
-    "version": "0.1",
-    "manifest_version": 3,
-    "action": {
-        "default_popup": "index.html"
-    },
-    "permissions": [
-        "storage",
-        "scripting",
-        "activeTab",
-        "tabs",
-        "tabCapture",
-        "alarms"
-    ],
-    "host_permissions": [
-        "*://*/*"
-    ],
-    "content_security_policy": {
-        "extension_pages": "script-src 'self' 'wasm-unsafe-eval'"
-    }
+	"name": "Lecture Master",
+	"description": "Makes watching lectures more efficient!",
+	"version": "0.1",
+	"manifest_version": 3,
+	"action": {
+		"default_popup": "index.html"
+	},
+	"permissions": [
+		"storage",
+		"scripting",
+		"activeTab",
+		"tabs",
+		"tabCapture",
+		"alarms"
+	],
+	"host_permissions": [
+		"*://*/*"
+	],
+	"background": {
+		"service_worker": "assets/worker-4abd390f.js"
+	},
+	"content_security_policy": {
+		"extension_pages": "script-src 'self' 'wasm-unsafe-eval'"
+	}
 }
