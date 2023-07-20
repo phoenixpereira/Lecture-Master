@@ -14,7 +14,7 @@ yarn
 yarn install
 ```
 
-Next, build the extension using webpack:
+Next, build the extension using vite:
 
 ```bash
 yarn build
@@ -25,7 +25,7 @@ Finally, load the extension into Chrome:
 Open Chrome and navigate to `chrome://extensions/`.
 - Enable "Developer mode".
 - Click "Load unpacked".
-- Select the `dist` folder from the cloned repository.
+- Select the `build` folder from the cloned repository.
 - The extension should now be loaded and running in your browser.
 
 ## Development
