@@ -371,7 +371,6 @@ function FileTile(props: {
 	// const audioPlayer = useRef<HTMLAudioElement>(null);
 
 	// Create hidden input element
-	console.log("1");
 	let elem = document.createElement("input");
 	elem.type = "file";
 	elem.oninput = (event) => {
@@ -384,7 +383,6 @@ function FileTile(props: {
 		const mimeType = files[0].type;
 
 		const reader = new FileReader();
-		console.log("2");
 		reader.addEventListener("load", async (e) => {
 			const arrayBuffer = e.target?.result as ArrayBuffer; // Get the ArrayBuffer
 			if (!arrayBuffer) return;
@@ -396,7 +394,6 @@ function FileTile(props: {
 			const decoded = await audioCTX.decodeAudioData(arrayBuffer);
 
 			props.onFileUpdate(decoded, urlObj, mimeType);
-			console.log("3");
 
 		});
 		reader.readAsArrayBuffer(files[0]);
@@ -431,7 +428,7 @@ function LiveTile(props: {
 		try {
 			chrome.tabCapture.capture({ audio: true }, async (stream) => {
 				if (chrome.runtime.lastError) {
-					console.error("Error accessing tab audio 1:", chrome.runtime.lastError);
+					console.error("Error accessing tab audio:", chrome.runtime.lastError);
 					return;
 				}
 
@@ -469,7 +466,7 @@ function LiveTile(props: {
 				}, 5000);
 			});
 		} catch (error) {
-			console.error("Error accessing tab audio 2:", error);
+			console.error("Error accessing tab audio:", error);
 		}
 	};
 
@@ -495,24 +492,6 @@ function Tile(props: {
 				</div>
 			)}
 		</button>
-	);
-}
-
-function AnchorIcon() {
-	return (
-		<svg
-			xmlns='http://www.w3.org/2000/svg'
-			fill='none'
-			viewBox='0 0 24 24'
-			strokeWidth='1.5'
-			stroke='currentColor'
-		>
-			<path
-				strokeLinecap='round'
-				strokeLinejoin='round'
-				d='M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244'
-			/>
-		</svg>
 	);
 }
 
@@ -552,24 +531,6 @@ function SettingsIcon() {
 				strokeLinecap='round'
 				strokeLinejoin='round'
 				d='M15 12a3 3 0 11-6 0 3 3 0 016 0z'
-			/>
-		</svg>
-	);
-}
-
-function MicrophoneIcon() {
-	return (
-		<svg
-			xmlns='http://www.w3.org/2000/svg'
-			fill='none'
-			viewBox='0 0 24 24'
-			strokeWidth={1.5}
-			stroke='currentColor'
-		>
-			<path
-				strokeLinecap='round'
-				strokeLinejoin='round'
-				d='M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z'
 			/>
 		</svg>
 	);
