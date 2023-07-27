@@ -413,97 +413,123 @@ function FileTile(props: {
 }
 
 function LiveTile(props: {
-    icon: JSX.Element;
-    text: string;
-    onAudioUpdate: (
-        audioBlob: Blob,
-        blobUrl: string,
-        mimeType: string,
-        audioBuffer: AudioBuffer // Add the audio buffer here
-    ) => void;
-    // transcriber: Transcriber;
+  icon: JSX.Element;
+  text: string;
+  onAudioUpdate: (
+    audioBlob: Blob,
+    blobUrl: string,
+    mimeType: string,
+    audioBuffer: AudioBuffer
+  ) => void;
 }) {
-    const [recording, setRecording] = useState(false);
-    const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-    const chunksRef = useRef<Blob[]>([]);
+  const [recording, setRecording] = useState(false);
+  const [keepTabMuted, setKeepTabMuted] = useState(true);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+  const audio = useRef<HTMLAudioElement | null>(null); 
 
-    const handleLiveStreamButtonClick = async () => {
-        if (recording) {
-            // If already recording, stop the recording
-            stopRecording();
-        } else {
-            // If not recording, start the recording
-            try {
-                chrome.tabCapture.capture({ audio: true }, async (stream) => {
-                    if (chrome.runtime.lastError) {
-                        console.error(
-                            "Error accessing tab audio:",
-                            chrome.runtime.lastError
-                        );
-                        return;
-                    }
+  const handleLiveStreamButtonClick = async () => {
+    if (recording) {
+      // If already recording, stop the recording
+      stopRecording();
+    } else {
+      // If not recording, start the recording
+      try {
+        chrome.tabCapture.capture({ audio: true }, async (stream) => {
+          if (chrome.runtime.lastError) {
+            console.error(
+              "Error accessing tab audio:",
+              chrome.runtime.lastError
+            );
+            return;
+          }
 
-                    if (stream === null) {
-                        console.error("Unable to capture tab audio.");
-                        return;
-                    }
+          if (stream === null) {
+            console.error("Unable to capture tab audio.");
+            return;
+          }
 
-                    const audioCTX = new AudioContext({
-                        sampleRate: Constants.SAMPLING_RATE,
-                    });
+          const audioCTX = new AudioContext({
+            sampleRate: Constants.SAMPLING_RATE,
+          });
 
-                    const mediaRecorder = new MediaRecorder(stream);
-                    mediaRecorderRef.current = mediaRecorder;
+          const mediaRecorder = new MediaRecorder(stream);
+          mediaRecorderRef.current = mediaRecorder;
 
-                    mediaRecorder.addEventListener("dataavailable", (event) => {
-                        chunksRef.current.push(event.data);
-                    });
+          mediaRecorder.addEventListener("dataavailable", (event) => {
+            chunksRef.current.push(event.data);
+          });
 
-                    mediaRecorder.addEventListener("stop", async () => {
-                        const audioBlob = new Blob(chunksRef.current, {
-                            type: "audio/webm",
-                        });
-                        const blobUrl = URL.createObjectURL(audioBlob);
+          mediaRecorder.addEventListener("stop", async () => {
+            const audioBlob = new Blob(chunksRef.current, {
+              type: "audio/webm",
+            });
+            const blobUrl = URL.createObjectURL(audioBlob);
 
-                        // Decode the audio data to get the audio buffer
-                        const arrayBuffer = await audioBlob.arrayBuffer();
-                        const audioBuffer = await audioCTX.decodeAudioData(arrayBuffer);
+            // Decode the audio data to get the audio buffer
+            const arrayBuffer = await audioBlob.arrayBuffer();
+            const audioBuffer = await audioCTX.decodeAudioData(arrayBuffer);
 
-                        // Pass the audio buffer to the onAudioUpdate function
-                        props.onAudioUpdate(audioBlob, blobUrl, "audio/webm", audioBuffer);
+            // Pass the audio buffer to the onAudioUpdate function
+            props.onAudioUpdate(audioBlob, blobUrl, "audio/webm", audioBuffer);
 
-                        // Reset the recording state and chunks
-                        chunksRef.current = [];
-                        setRecording(false);
-                    });
-
-                    mediaRecorder.start();
-
-                    // Update the recording state
-                    setRecording(true);
-                });
-            } catch (error) {
-                console.error("Error accessing tab audio:", error);
-            }
-        }
-    };
-
-    const stopRecording = () => {
-        if (mediaRecorderRef.current && recording) {
-            mediaRecorderRef.current.stop();
-            // Update the recording state
+            // Reset the recording state and chunks
+            chunksRef.current = [];
             setRecording(false);
-        }
-    };
 
-    return (
-        <Tile
-            icon={props.icon}
-            text={recording ? "Stop Recording" : props.text}
-            onClick={handleLiveStreamButtonClick}
+            // If keepTabMuted is true, pause the audio playback after recording
+            if (keepTabMuted && audio.current) {
+              audio.current.pause();
+            }
+          });
+
+          mediaRecorder.start();
+
+          // Update the recording state
+          setRecording(true);
+
+          // If keepTabMuted is false, play the audio during recording
+          if (!keepTabMuted && audio.current) {
+            const liveStream = new MediaStream(stream.getAudioTracks());
+            audio.current.srcObject = liveStream;
+            audio.current.play();
+          }
+        });
+      } catch (error) {
+        console.error("Error accessing tab audio:", error);
+      }
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && recording) {
+      mediaRecorderRef.current.stop();
+      // Update the recording state
+      setRecording(false);
+    }
+  };
+
+  return (
+    <>
+      <Tile
+        icon={props.icon}
+        text={recording ? "Stop Recording" : props.text}
+        onClick={handleLiveStreamButtonClick}
+      />
+      <label>
+        Keep Tab Muted:
+        <input
+          type="checkbox"
+          checked={keepTabMuted}
+          onChange={() => setKeepTabMuted(!keepTabMuted)}
         />
-    );
+      </label>
+      <audio ref={audio} controls style={{ display: "none" }} />
+    </>
+  );
 }
+
+
 
 function Tile(props: {
     icon: JSX.Element;
