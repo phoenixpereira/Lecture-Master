@@ -115,7 +115,7 @@ const LANGUAGES = {
     ha: "hausa",
     ba: "bashkir",
     jw: "javanese",
-    su: "sundanese",
+    su: "sundanese"
 };
 
 export enum AudioSource {
@@ -127,18 +127,18 @@ export enum AudioSource {
 export function AudioManager(props: { transcriber: Transcriber }) {
     const [audioData, setAudioData] = useState<
         | {
-            buffer: AudioBuffer;
-            url: string;
-            source: AudioSource;
-            mimeType: string;
-        }
+              buffer: AudioBuffer;
+              url: string;
+              source: AudioSource;
+              mimeType: string;
+          }
         | undefined
     >(undefined);
 
     return (
         <>
-            <div className=' m-8 flex flex-col justify-center items-center rounded-lg bg-white shadow-xl shadow-black/5 ring-1 ring-slate-700/10'>
-                <div className='flex flex-row space-x-2 py-2 w-full px-2'>
+            <div className=" m-8 flex flex-col justify-center items-center rounded-lg bg-white shadow-xl shadow-black/5 ring-1 ring-slate-700/10">
+                <div className="flex flex-row space-x-2 py-2 w-full px-2">
                     <FileTile
                         icon={<FolderIcon />}
                         text={"From file"}
@@ -148,7 +148,7 @@ export function AudioManager(props: { transcriber: Transcriber }) {
                                 buffer: decoded,
                                 url: blobUrl,
                                 source: AudioSource.FILE,
-                                mimeType: mimeType,
+                                mimeType: mimeType
                             });
                         }}
                     />
@@ -156,7 +156,12 @@ export function AudioManager(props: { transcriber: Transcriber }) {
                     <LiveTile
                         icon={<FolderIcon />}
                         text={"From Live Stream"}
-                        onAudioUpdate={(audioBlob, blobUrl, mimeType, audioBuffer) => {
+                        onAudioUpdate={(
+                            audioBlob,
+                            blobUrl,
+                            mimeType,
+                            audioBuffer
+                        ) => {
                             props.transcriber.onInputChange();
                             setAudioData({
                                 url: blobUrl,
@@ -170,7 +175,7 @@ export function AudioManager(props: { transcriber: Transcriber }) {
             </div>
             {audioData && (
                 <>
-                    <div className='relative w-full flex justify-center items-center'>
+                    <div className="relative w-full flex justify-center items-center">
                         <TranscribeButton
                             onClick={() => {
                                 props.transcriber.start(audioData.buffer);
@@ -180,19 +185,18 @@ export function AudioManager(props: { transcriber: Transcriber }) {
                         />
 
                         <SettingsTile
-                            className='absolute right-4'
+                            className="absolute right-4"
                             transcriber={props.transcriber}
                             icon={<SettingsIcon />}
                         />
                     </div>
                     {props.transcriber.progressItems.length > 0 && (
-                        <div className='relative z-10 p-4 w-full'>
+                        <div className="relative z-10 p-4 w-full">
                             <label>
                                 Loading model files... (only run once)
                             </label>
                             {props.transcriber.progressItems.map((data) => (
-                                <div key={data.file}>
-                                </div>
+                                <div key={data.file}></div>
                             ))}
                         </div>
                     )}
@@ -223,7 +227,10 @@ function SettingsTile(props: {
 
     return (
         <div className={props.className}>
-            <Tile icon={props.icon} onClick={onClick} />
+            <Tile
+                icon={props.icon}
+                onClick={onClick}
+            />
             <SettingsModal
                 show={showModal}
                 onSubmit={onSubmit}
@@ -246,7 +253,7 @@ function SettingsModal(props: {
         tiny: [61, 231],
         base: [103, 398],
         small: [290],
-        medium: [833],
+        medium: [833]
     };
     return (
         <Modal
@@ -256,7 +263,7 @@ function SettingsModal(props: {
                 <>
                     <label>Select the model to use.</label>
                     <select
-                        className='mt-1 mb-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                        className="mt-1 mb-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         defaultValue={props.transcriber.model}
                         onChange={(e) => {
                             props.transcriber.setModel(e.target.value);
@@ -267,46 +274,56 @@ function SettingsModal(props: {
                                 (key) =>
                                     props.transcriber.quantized ||
                                     // @ts-ignore
-                                    models[key].length == 2,
+                                    models[key].length == 2
                             )
                             .map((key) => (
-                                <option key={key} value={key}>{`whisper-${key}${props.transcriber.multilingual ? "" : ".en"
-                                    } (${
+                                <option
+                                    key={key}
+                                    value={key}
+                                >{`whisper-${key}${
+                                    props.transcriber.multilingual ? "" : ".en"
+                                } (${
                                     // @ts-ignore
                                     models[key][
-                                    props.transcriber.quantized ? 0 : 1
+                                        props.transcriber.quantized ? 0 : 1
                                     ]
-                                    }MB)`}</option>
+                                }MB)`}</option>
                             ))}
                     </select>
-                    <div className='flex justify-between items-center mb-3 px-1'>
-                        <div className='flex'>
+                    <div className="flex justify-between items-center mb-3 px-1">
+                        <div className="flex">
                             <input
-                                id='multilingual'
-                                type='checkbox'
+                                id="multilingual"
+                                type="checkbox"
                                 checked={props.transcriber.multilingual}
                                 onChange={(e) => {
                                     props.transcriber.setMultilingual(
-                                        e.target.checked,
+                                        e.target.checked
                                     );
                                 }}
                             ></input>
-                            <label htmlFor={"multilingual"} className='ms-1'>
+                            <label
+                                htmlFor={"multilingual"}
+                                className="ms-1"
+                            >
                                 Multilingual
                             </label>
                         </div>
-                        <div className='flex'>
+                        <div className="flex">
                             <input
-                                id='quantize'
-                                type='checkbox'
+                                id="quantize"
+                                type="checkbox"
                                 checked={props.transcriber.quantized}
                                 onChange={(e) => {
                                     props.transcriber.setQuantized(
-                                        e.target.checked,
+                                        e.target.checked
                                     );
                                 }}
                             ></input>
-                            <label htmlFor={"quantize"} className='ms-1'>
+                            <label
+                                htmlFor={"quantize"}
+                                className="ms-1"
+                            >
                                 Quantized
                             </label>
                         </div>
@@ -315,27 +332,30 @@ function SettingsModal(props: {
                         <>
                             <label>Select the source language.</label>
                             <select
-                                className='mt-1 mb-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                                className="mt-1 mb-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 defaultValue={props.transcriber.language}
                                 onChange={(e) => {
                                     props.transcriber.setLanguage(
-                                        e.target.value,
+                                        e.target.value
                                     );
                                 }}
                             >
                                 {Object.keys(LANGUAGES).map((key, i) => (
-                                    <option key={key} value={key}>
+                                    <option
+                                        key={key}
+                                        value={key}
+                                    >
                                         {names[i]}
                                     </option>
                                 ))}
                             </select>
                             <label>Select the task to perform.</label>
                             <select
-                                className='mt-1 mb-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                                className="mt-1 mb-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 defaultValue={props.transcriber.subtask}
                                 onChange={(e) => {
                                     props.transcriber.setSubtask(
-                                        e.target.value,
+                                        e.target.value
                                     );
                                 }}
                             >
@@ -349,13 +369,13 @@ function SettingsModal(props: {
                 </>
             }
             onClose={props.onClose}
-            onSubmit={() => { }}
+            onSubmit={() => {}}
         />
     );
 }
 
 function VerticalBar() {
-    return <div className='w-[1px] bg-slate-200'></div>;
+    return <div className="w-[1px] bg-slate-200"></div>;
 }
 
 function FileTile(props: {
@@ -364,7 +384,7 @@ function FileTile(props: {
     onFileUpdate: (
         decoded: AudioBuffer,
         blobUrl: string,
-        mimeType: string,
+        mimeType: string
     ) => void;
 }) {
     // const audioPlayer = useRef<HTMLAudioElement>(null);
@@ -387,13 +407,12 @@ function FileTile(props: {
             if (!arrayBuffer) return;
 
             const audioCTX = new AudioContext({
-                sampleRate: Constants.SAMPLING_RATE,
+                sampleRate: Constants.SAMPLING_RATE
             });
 
             const decoded = await audioCTX.decodeAudioData(arrayBuffer);
 
             props.onFileUpdate(decoded, urlObj, mimeType);
-
         });
         reader.readAsArrayBuffer(files[0]);
 
@@ -413,123 +432,134 @@ function FileTile(props: {
 }
 
 function LiveTile(props: {
-  icon: JSX.Element;
-  text: string;
-  onAudioUpdate: (
-    audioBlob: Blob,
-    blobUrl: string,
-    mimeType: string,
-    audioBuffer: AudioBuffer
-  ) => void;
+    icon: JSX.Element;
+    text: string;
+    onAudioUpdate: (
+        audioBlob: Blob,
+        blobUrl: string,
+        mimeType: string,
+        audioBuffer: AudioBuffer
+    ) => void;
 }) {
-  const [recording, setRecording] = useState(false);
-  const [keepTabMuted, setKeepTabMuted] = useState(true);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const chunksRef = useRef<Blob[]>([]);
-  const audio = useRef<HTMLAudioElement | null>(null); 
+    const [recording, setRecording] = useState(false);
+    const [keepTabMuted, setKeepTabMuted] = useState(true);
+    const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+    const chunksRef = useRef<Blob[]>([]);
+    const audio = useRef<HTMLAudioElement | null>(null);
 
-  const handleLiveStreamButtonClick = async () => {
-    if (recording) {
-      // If already recording, stop the recording
-      stopRecording();
-    } else {
-      // If not recording, start the recording
-      try {
-        chrome.tabCapture.capture({ audio: true }, async (stream) => {
-          if (chrome.runtime.lastError) {
-            console.error(
-              "Error accessing tab audio:",
-              chrome.runtime.lastError
-            );
-            return;
-          }
+    const handleLiveStreamButtonClick = async () => {
+        if (recording) {
+            // If already recording, stop the recording
+            stopRecording();
+        } else {
+            // If not recording, start the recording
+            try {
+                chrome.tabCapture.capture({ audio: true }, async (stream) => {
+                    if (chrome.runtime.lastError) {
+                        console.error(
+                            "Error accessing tab audio:",
+                            chrome.runtime.lastError
+                        );
+                        return;
+                    }
 
-          if (stream === null) {
-            console.error("Unable to capture tab audio.");
-            return;
-          }
+                    if (stream === null) {
+                        console.error("Unable to capture tab audio.");
+                        return;
+                    }
 
-          const audioCTX = new AudioContext({
-            sampleRate: Constants.SAMPLING_RATE,
-          });
+                    const audioCTX = new AudioContext({
+                        sampleRate: Constants.SAMPLING_RATE
+                    });
 
-          const mediaRecorder = new MediaRecorder(stream);
-          mediaRecorderRef.current = mediaRecorder;
+                    const mediaRecorder = new MediaRecorder(stream);
+                    mediaRecorderRef.current = mediaRecorder;
 
-          mediaRecorder.addEventListener("dataavailable", (event) => {
-            chunksRef.current.push(event.data);
-          });
+                    mediaRecorder.addEventListener("dataavailable", (event) => {
+                        chunksRef.current.push(event.data);
+                    });
 
-          mediaRecorder.addEventListener("stop", async () => {
-            const audioBlob = new Blob(chunksRef.current, {
-              type: "audio/webm",
-            });
-            const blobUrl = URL.createObjectURL(audioBlob);
+                    mediaRecorder.addEventListener("stop", async () => {
+                        const audioBlob = new Blob(chunksRef.current, {
+                            type: "audio/webm"
+                        });
+                        const blobUrl = URL.createObjectURL(audioBlob);
 
-            // Decode the audio data to get the audio buffer
-            const arrayBuffer = await audioBlob.arrayBuffer();
-            const audioBuffer = await audioCTX.decodeAudioData(arrayBuffer);
+                        // Decode the audio data to get the audio buffer
+                        const arrayBuffer = await audioBlob.arrayBuffer();
+                        const audioBuffer = await audioCTX.decodeAudioData(
+                            arrayBuffer
+                        );
 
-            // Pass the audio buffer to the onAudioUpdate function
-            props.onAudioUpdate(audioBlob, blobUrl, "audio/webm", audioBuffer);
+                        // Pass the audio buffer to the onAudioUpdate function
+                        props.onAudioUpdate(
+                            audioBlob,
+                            blobUrl,
+                            "audio/webm",
+                            audioBuffer
+                        );
 
-            // Reset the recording state and chunks
-            chunksRef.current = [];
-            setRecording(false);
+                        // Reset the recording state and chunks
+                        chunksRef.current = [];
+                        setRecording(false);
 
-            // If keepTabMuted is true, pause the audio playback after recording
-            if (keepTabMuted && audio.current) {
-              audio.current.pause();
+                        // If keepTabMuted is true, pause the audio playback after recording
+                        if (keepTabMuted && audio.current) {
+                            audio.current.pause();
+                        }
+                    });
+
+                    mediaRecorder.start();
+
+                    // Update the recording state
+                    setRecording(true);
+
+                    // If keepTabMuted is false, play the audio during recording
+                    if (!keepTabMuted && audio.current) {
+                        const liveStream = new MediaStream(
+                            stream.getAudioTracks()
+                        );
+                        audio.current.srcObject = liveStream;
+                        audio.current.play();
+                    }
+                });
+            } catch (error) {
+                console.error("Error accessing tab audio:", error);
             }
-          });
+        }
+    };
 
-          mediaRecorder.start();
+    const stopRecording = () => {
+        if (mediaRecorderRef.current && recording) {
+            mediaRecorderRef.current.stop();
+            // Update the recording state
+            setRecording(false);
+        }
+    };
 
-          // Update the recording state
-          setRecording(true);
-
-          // If keepTabMuted is false, play the audio during recording
-          if (!keepTabMuted && audio.current) {
-            const liveStream = new MediaStream(stream.getAudioTracks());
-            audio.current.srcObject = liveStream;
-            audio.current.play();
-          }
-        });
-      } catch (error) {
-        console.error("Error accessing tab audio:", error);
-      }
-    }
-  };
-
-  const stopRecording = () => {
-    if (mediaRecorderRef.current && recording) {
-      mediaRecorderRef.current.stop();
-      // Update the recording state
-      setRecording(false);
-    }
-  };
-
-  return (
-    <>
-      <Tile
-        icon={props.icon}
-        text={recording ? "Stop Recording" : props.text}
-        onClick={handleLiveStreamButtonClick}
-      />
-      <label>
-        Keep Tab Muted:
-        <input
-          type="checkbox"
-          checked={keepTabMuted}
-          onChange={() => setKeepTabMuted(!keepTabMuted)}
-        />
-      </label>
-      <audio ref={audio} controls style={{ display: "none" }} />
-    </>
-  );
+    return (
+        <>
+            <Tile
+                icon={props.icon}
+                text={recording ? "Stop Recording" : props.text}
+                onClick={handleLiveStreamButtonClick}
+            />
+            <label>
+                Keep Tab Muted:
+                <input
+                    type="checkbox"
+                    checked={keepTabMuted}
+                    onChange={() => setKeepTabMuted(!keepTabMuted)}
+                />
+            </label>
+            <audio
+                ref={audio}
+                controls
+                style={{ display: "none" }}
+            />
+        </>
+    );
 }
-
-
 
 function Tile(props: {
     icon: JSX.Element;
@@ -539,11 +569,11 @@ function Tile(props: {
     return (
         <button
             onClick={props.onClick}
-            className='flex items-center justify-center rounded-lg p-2 bg-blue text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200'
+            className="flex items-center justify-center rounded-lg p-2 bg-blue text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200"
         >
-            <div className='w-7 h-7'>{props.icon}</div>
+            <div className="w-7 h-7">{props.icon}</div>
             {props.text && (
-                <div className='ml-2 break-text text-center text-md w-30'>
+                <div className="ml-2 break-text text-center text-md w-30">
                     {props.text}
                 </div>
             )}
@@ -554,16 +584,16 @@ function Tile(props: {
 function FolderIcon() {
     return (
         <svg
-            xmlns='http://www.w3.org/2000/svg'
-            fill='none'
-            viewBox='0 0 24 24'
-            strokeWidth='1.5'
-            stroke='currentColor'
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
         >
             <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                d='M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 00-1.883 2.542l.857 6a2.25 2.25 0 002.227 1.932H19.05a2.25 2.25 0 002.227-1.932l.857-6a2.25 2.25 0 00-1.883-2.542m-16.5 0V6A2.25 2.25 0 016 3.75h3.879a1.5 1.5 0 011.06.44l2.122 2.12a1.5 1.5 0 001.06.44H18A2.25 2.25 0 0120.25 9v.776'
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 00-1.883 2.542l.857 6a2.25 2.25 0 002.227 1.932H19.05a2.25 2.25 0 002.227-1.932l.857-6a2.25 2.25 0 00-1.883-2.542m-16.5 0V6A2.25 2.25 0 016 3.75h3.879a1.5 1.5 0 011.06.44l2.122 2.12a1.5 1.5 0 001.06.44H18A2.25 2.25 0 0120.25 9v.776"
             />
         </svg>
     );
@@ -572,21 +602,21 @@ function FolderIcon() {
 function SettingsIcon() {
     return (
         <svg
-            xmlns='http://www.w3.org/2000/svg'
-            fill='none'
-            viewBox='0 0 24 24'
-            strokeWidth='1.25'
-            stroke='currentColor'
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.25"
+            stroke="currentColor"
         >
             <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                d='M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z'
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"
             />
             <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                d='M15 12a3 3 0 11-6 0 3 3 0 016 0z'
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
             />
         </svg>
     );
