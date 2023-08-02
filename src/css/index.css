@@ -1,41 +1,13 @@
-.app-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 50vh;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+    height: 100%;
 }
 
-.container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.heading-1 {
-    font-size: 2rem;
-    font-weight: 800;
-    letter-spacing: -0.025em;
-    color: #1f2937;
-    text-align: center;
-}
-
-.heading-2 {
-    margin-top: 0.75rem;
-    margin-bottom: 1.25rem;
-    padding: 0.5rem;
-    font-size: 1.25rem;
-    font-weight: 600;
-    letter-spacing: -0.025em;
-    color: #1f2937;
-    text-align: center;
-}
-
-.developer-info {
-    position: absolute;
-    bottom: 1rem;
-}
-
-.developer-link {
-    text-decoration: underline;
+audio::-webkit-media-controls-panel {
+    background-color: white;
 }
