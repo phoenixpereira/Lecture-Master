@@ -14,9 +14,13 @@
         "tabCapture",
         "alarms"
     ],
-    "host_permissions": [
-        "*://*/*"
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["assets/contentScript.js"]
+        }
     ],
+    "host_permissions": ["*://*/*"],
     "content_security_policy": {
         "extension_pages": "script-src 'self' 'wasm-unsafe-eval'"
     }
