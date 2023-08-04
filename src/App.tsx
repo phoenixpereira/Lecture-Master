@@ -43,6 +43,10 @@ export default function App() {
         console.log("set 3");
     };
 
+    // Audio context flag and state
+    const [audioContextInitialised, setAudioContextInitialised] =
+        useState(false);
+
     useEffect(() => {
         // Initialise the current values from extension storage on component mount
         chrome.storage.local.get(
@@ -90,6 +94,12 @@ export default function App() {
                         "silenceThresholdValue"
                     ) as HTMLElement
                 ).textContent = threshold.toFixed(1);
+
+                // Initialise audio context if not already initialised
+                if (!audioContextInitialised) {
+                    createAudioContext();
+                    setAudioContextInitialised(true);
+                }
             }
         );
     }, []);

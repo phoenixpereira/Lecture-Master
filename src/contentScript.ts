@@ -17,6 +17,9 @@ let silenceCounter: number = 0;
 let silenceThreshold: number = -5.9; // Threshold for silence in decibels
 let requiredSilenceFrames: number = 3; // Number of frames required for silence
 
+// Audio context flag and state
+let audioContextInitialised = false;
+
 // Create the audio context and gain node
 function createAudioContext() {
     audioContext = new window.AudioContext();
@@ -114,18 +117,14 @@ function handleVideoEvents(event: Event) {
     const video = event.target as HTMLMediaElement;
 
     if (video.paused || video.ended) {
-        if (audioContext) {
-            audioContext.suspend();
-        }
         isPausedOrEnded = true;
     } else {
-        if (!audioContext) {
+        if (!audioContextInitialised) {
             createAudioContext();
-        } else {
-            audioContext.resume();
-            isPausedOrEnded = false;
-            getVideoVolume(video);
+            audioContextInitialised = true;
         }
+        isPausedOrEnded = false;
+        getVideoVolume(video);
     }
 }
 
