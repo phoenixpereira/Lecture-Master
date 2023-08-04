@@ -14,8 +14,8 @@ let transitionInterval: number = 10; // Interval between transition steps in mil
 
 // Silence detection settings
 let silenceCounter: number = 0;
-let silenceThreshold: number = -5.9; // Threshold for silence in decibels
-let requiredSilenceFrames: number = 3; // Number of frames required for silence
+let silenceThreshold: number = -14; // Threshold for silence in decibels
+let requiredSilenceFrames: number = 3;
 
 // Audio context flag and state
 let audioContextInitialised = false;
@@ -56,26 +56,34 @@ function getVideoVolume(video: HTMLMediaElement) {
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
 
-    analyser.getByteTimeDomainData(dataArray);
+    analyser.getByteFrequencyData(dataArray);
 
-    const maxAmplitude = Math.max(...Array.from(dataArray));
-    const volumeInDecibels = 20 * Math.log10(maxAmplitude / 255);
-    const threshold = -5.9;
+    // Calculate the average amplitude value
+    let sumAmplitude = dataArray.reduce((acc, value) => acc + value, 0);
+    const averageAmplitude = sumAmplitude / dataArray.length;
+
+    // Normalise the amplitude to a value between 0 and 1
+    const normalizedAmplitude = averageAmplitude / 255;
+
+    // Calculate the volume in decibels using the normalized amplitude
+    const volumeInDecibels = 10 * Math.log10(normalizedAmplitude);
     console.log(
         "Actual Volume: ",
         volumeInDecibels,
         "Threshold: ",
-        silenceThreshold
+        silenceThreshold,
+        "Speed: ",
+        videoElement!.playbackRate
     );
 
     if (volumeInDecibels >= silenceThreshold) {
         silenceCounter = 0;
-        setTargetPlaybackRate(normalPlaybackRate);
+        videoElement!.playbackRate = normalPlaybackRate;
     } else {
         if (silenceCounter >= requiredSilenceFrames) {
-            setTargetPlaybackRate(silentPlaybackRate);
+            videoElement!.playbackRate = silentPlaybackRate;
         } else {
-            setTargetPlaybackRate(normalPlaybackRate);
+            videoElement!.playbackRate = normalPlaybackRate;
         }
         silenceCounter++;
     }
@@ -85,41 +93,6 @@ function getVideoVolume(video: HTMLMediaElement) {
             getVideoVolume(video);
         }, 200); // Run the function again after 200 milliseconds
     }
-}
-
-// Set the target playback rate
-function setTargetPlaybackRate(rate: number) {
-    targetPlaybackRate = Math.max(0.5, Math.min(2, rate));
-    if (isTransitioning) return;
-    startPlaybackTransition();
-}
-
-// Perform the playback rate transition
-function startPlaybackTransition() {
-    isTransitioning = true;
-    const totalSteps = Math.ceil(
-        (transitionDuration * 1000) / transitionInterval
-    );
-    const playbackRateStep =
-        (targetPlaybackRate - currentPlaybackRate) / totalSteps;
-    let stepCount = 0;
-
-    function updatePlaybackRate() {
-        stepCount++;
-        currentPlaybackRate += playbackRateStep;
-
-        if (stepCount >= totalSteps) {
-            currentPlaybackRate = targetPlaybackRate;
-            isTransitioning = false;
-            videoElement!.playbackRate = currentPlaybackRate;
-            return;
-        }
-
-        videoElement!.playbackRate = currentPlaybackRate;
-        setTimeout(updatePlaybackRate, transitionInterval);
-    }
-
-    updatePlaybackRate();
 }
 
 // Handle video events (play, pause, ended)

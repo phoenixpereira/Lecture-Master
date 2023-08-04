@@ -4,7 +4,7 @@ export default function App() {
     // State variables to hold the current values
     const [normalPlaybackRate, setNormalPlaybackRate] = useState(1);
     const [silentPlaybackRate, setSilentPlaybackRate] = useState(1);
-    const [silenceThreshold, setSilenceThreshold] = useState(-5.9);
+    const [silenceThreshold, setSilenceThreshold] = useState(-14);
 
     // Slider event handlers to update the current values and store in extension storage
     const handleNormalPlaybackRateChange = (
@@ -14,7 +14,6 @@ export default function App() {
         setNormalPlaybackRate(value);
         document.getElementById("normalPlaybackValue")!.textContent =
             value.toFixed(1);
-        // Set the variable in extension storage
         chrome.storage.local.set({ normalPlaybackRate: value });
         console.log("set 1");
     };
@@ -26,7 +25,6 @@ export default function App() {
         setSilentPlaybackRate(value);
         document.getElementById("silentPlaybackValue")!.textContent =
             value.toFixed(1);
-        // Set the variable in extension storage
         chrome.storage.local.set({ silentPlaybackRate: value });
         console.log("set 2");
     };
@@ -38,7 +36,6 @@ export default function App() {
         setSilenceThreshold(value);
         document.getElementById("silenceThresholdValue")!.textContent =
             value.toFixed(1);
-        // Set the variable in extension storage
         chrome.storage.local.set({ silenceThreshold: value });
         console.log("set 3");
     };
@@ -54,7 +51,7 @@ export default function App() {
             (data) => {
                 const normalRate = data.normalPlaybackRate || 1;
                 const silentRate = data.silentPlaybackRate || 1;
-                const threshold = data.silenceThreshold || -5.9;
+                const threshold = data.silenceThreshold || -14;
 
                 // Update state and UI sliders
                 setNormalPlaybackRate(normalRate);
@@ -181,18 +178,18 @@ export default function App() {
                         type="range"
                         id="silenceThreshold"
                         className="w-48 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600 slider-animation slider-handle"
-                        min="-10"
+                        min="-24"
                         max="0"
                         step="0.1"
-                        defaultValue="-5.9"
+                        defaultValue="-14"
                         onChange={handleSilenceThresholdChange}
                     />
                     <div className="flex justify-between w-full text-white">
-                        <span>-10dB</span>
+                        <span>-24dB</span>
                         <span>0dB</span>
                     </div>
                     <div className="text-white">
-                        Current: <span id="silenceThresholdValue">-5.9</span>dB
+                        Current: <span id="silenceThresholdValue">-14</span>dB
                     </div>
                 </div>
             </div>
