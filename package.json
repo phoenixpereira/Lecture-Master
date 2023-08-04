@@ -5,9 +5,8 @@
     "type": "module",
     "main": "src/index.tsx",
     "scripts": {
-        "dev": "vite build --watch",
-        "clean": "rm -rf node_modules/ dist/",
-        "build": "vite build && tsc src/contentScript.ts --outDir build/assets",
+        "clean": "rm -rf node_modules/ build/",
+        "build": "vite build && tsc src/contentScript.ts --outFile build/assets/contentScript.js",
         "preview": "vite preview"
     },
     "dependencies": {
@@ -20,8 +19,8 @@
     "devDependencies": {
         "@types/react": "^18.0.28",
         "@types/react-dom": "^18.0.11",
-        "@typescript-eslint/eslint-plugin": "^6.1.0",
-        "@typescript-eslint/parser": "^6.1.0",
+        "@typescript-eslint/eslint-plugin": "^5.43.0",
+        "@typescript-eslint/parser": "^5.0.0",
         "@vitejs/plugin-react": "^3.1.0",
         "autoprefixer": "^10.4.14",
         "eslint": "^8.37.0",
