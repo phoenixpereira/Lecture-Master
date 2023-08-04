@@ -19,6 +19,8 @@ let requiredSilenceFrames: number = 3; // Number of frames required for silence
 
 // Audio context flag and state
 let audioContextInitialised = false;
+let normalPlaybackRate = 1;
+let silentPlaybackRate = 1;
 
 // Create the audio context and gain node
 function createAudioContext() {
@@ -31,13 +33,16 @@ function getVideoVolume(video: HTMLMediaElement) {
     chrome.storage.local.get(
         ["normalPlaybackRate", "silentPlaybackRate", "silenceThreshold"],
         (data) => {
-            targetPlaybackRate = data.normalPlaybackRate || targetPlaybackRate;
-            silenceThreshold = data.silentPlaybackRate || silenceThreshold;
+            normalPlaybackRate = data.normalPlaybackRate || 1;
+            silentPlaybackRate = data.silentPlaybackRate || 1;
+            silenceThreshold = data.silenceThreshold || -5.9;
+            targetPlaybackRate = normalPlaybackRate;
         }
     );
 
-    if (!audioContext) {
+    if (!audioContextInitialised) {
         createAudioContext();
+        audioContextInitialised = true;
     }
 
     if (!source || !analyser) {
@@ -56,16 +61,21 @@ function getVideoVolume(video: HTMLMediaElement) {
     const maxAmplitude = Math.max(...Array.from(dataArray));
     const volumeInDecibels = 20 * Math.log10(maxAmplitude / 255);
     const threshold = -5.9;
-    console.log(targetPlaybackRate);
+    console.log(
+        "Actual Volume: ",
+        volumeInDecibels,
+        "Threshold: ",
+        silenceThreshold
+    );
 
     if (volumeInDecibels >= silenceThreshold) {
         silenceCounter = 0;
-        setTargetPlaybackRate(1);
+        setTargetPlaybackRate(normalPlaybackRate);
     } else {
         if (silenceCounter >= requiredSilenceFrames) {
-            setTargetPlaybackRate(2);
+            setTargetPlaybackRate(silentPlaybackRate);
         } else {
-            setTargetPlaybackRate(1);
+            setTargetPlaybackRate(normalPlaybackRate);
         }
         silenceCounter++;
     }
