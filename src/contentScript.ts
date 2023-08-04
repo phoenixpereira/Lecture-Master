@@ -25,6 +25,14 @@ function createAudioContext() {
 
 // Get the video volume and adjust playback rate
 function getVideoVolume(video: HTMLMediaElement) {
+    chrome.storage.local.get(
+        ["normalPlaybackRate", "silentPlaybackRate", "silenceThreshold"],
+        (data) => {
+            targetPlaybackRate = data.normalPlaybackRate || targetPlaybackRate;
+            silenceThreshold = data.silentPlaybackRate || silenceThreshold;
+        }
+    );
+
     if (!audioContext) {
         createAudioContext();
     }
@@ -50,14 +58,14 @@ function getVideoVolume(video: HTMLMediaElement) {
     if (volumeInDecibels >= silenceThreshold) {
         silenceCounter = 0;
         setTargetPlaybackRate(1);
-        console.log("1x");
+        // console.log("1x");
     } else {
         if (silenceCounter >= requiredSilenceFrames) {
             setTargetPlaybackRate(2);
-            console.log("2x");
+            // console.log("2x");
         } else {
             setTargetPlaybackRate(1);
-            console.log("1x");
+            // console.log("1x");
         }
         silenceCounter++;
     }

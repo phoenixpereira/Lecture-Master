@@ -1,15 +1,15 @@
 import React, { useEffect } from "react";
 
 export default function App() {
-    // Slider event handlers to update the current values
+    // Slider event handlers to update the current values and store in extension storage
     const handleNormalPlaybackRateChange = (
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
         const value = parseFloat(event.target.value);
         document.getElementById("normalPlaybackValue")!.textContent =
             value.toFixed(1);
-        // Set the variable in contentScript.ts
-        targetPlaybackRate = value;
+        // Set the variable in extension storage
+        chrome.storage.local.set({ normalPlaybackRate: value });
     };
 
     const handleSilentPlaybackRateChange = (
@@ -18,8 +18,8 @@ export default function App() {
         const value = parseFloat(event.target.value);
         document.getElementById("silentPlaybackValue")!.textContent =
             value.toFixed(1);
-        // Set the variable in contentScript.ts
-        targetPlaybackRate = value;
+        // Set the variable in extension storage
+        chrome.storage.local.set({ silentPlaybackRate: value });
     };
 
     const handleSilenceThresholdChange = (
@@ -28,15 +28,23 @@ export default function App() {
         const value = parseFloat(event.target.value);
         document.getElementById("silenceThresholdValue")!.textContent =
             value.toFixed(1);
-        // Set the variable in contentScript.ts
-        silenceThreshold = value;
+        // Set the variable in extension storage
+        chrome.storage.local.set({ silenceThreshold: value });
     };
 
     useEffect(() => {
-        // Initialize the current values on component mount
-        document.getElementById("normalPlaybackValue")!.textContent = "1";
-        document.getElementById("silentPlaybackValue")!.textContent = "1";
-        document.getElementById("silenceThresholdValue")!.textContent = "-5.9";
+        // Initialize the current values from extension storage on component mount
+        chrome.storage.local.get(
+            ["normalPlaybackRate", "silentPlaybackRate", "silenceThreshold"],
+            (data) => {
+                document.getElementById("normalPlaybackValue")!.textContent =
+                    data.normalPlaybackRate || "1";
+                document.getElementById("silentPlaybackValue")!.textContent =
+                    data.silentPlaybackRate || "1";
+                document.getElementById("silenceThresholdValue")!.textContent =
+                    data.silenceThreshold || "-5.9";
+            }
+        );
     }, []);
 
     return (
