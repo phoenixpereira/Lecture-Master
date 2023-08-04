@@ -1,3 +1,5 @@
+/// <reference types="@types/chrome" />
+
 // Initialise variables
 let audioContext: AudioContext | undefined;
 let source: MediaElementAudioSourceNode | undefined;
