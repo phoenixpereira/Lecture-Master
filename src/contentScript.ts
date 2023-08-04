@@ -58,14 +58,11 @@ function getVideoVolume(video: HTMLMediaElement) {
     if (volumeInDecibels >= silenceThreshold) {
         silenceCounter = 0;
         setTargetPlaybackRate(1);
-        // console.log("1x");
     } else {
         if (silenceCounter >= requiredSilenceFrames) {
             setTargetPlaybackRate(2);
-            // console.log("2x");
         } else {
             setTargetPlaybackRate(1);
-            // console.log("1x");
         }
         silenceCounter++;
     }
@@ -79,8 +76,8 @@ function getVideoVolume(video: HTMLMediaElement) {
 
 // Set the target playback rate
 function setTargetPlaybackRate(rate: number) {
-    targetPlaybackRate = Math.max(0.5, Math.min(2, rate)); // Limit target rate to supported range (0.5 to 2)
-    if (isTransitioning) return; // Ignore if transition is already in progress
+    targetPlaybackRate = Math.max(0.5, Math.min(2, rate));
+    if (isTransitioning) return;
     startPlaybackTransition();
 }
 

@@ -1,48 +1,95 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function App() {
+    // State variables to hold the current values
+    const [normalPlaybackRate, setNormalPlaybackRate] = useState(1);
+    const [silentPlaybackRate, setSilentPlaybackRate] = useState(1);
+    const [silenceThreshold, setSilenceThreshold] = useState(-5.9);
+
     // Slider event handlers to update the current values and store in extension storage
     const handleNormalPlaybackRateChange = (
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
         const value = parseFloat(event.target.value);
+        setNormalPlaybackRate(value);
         document.getElementById("normalPlaybackValue")!.textContent =
             value.toFixed(1);
         // Set the variable in extension storage
         chrome.storage.local.set({ normalPlaybackRate: value });
+        console.log("set 1");
     };
 
     const handleSilentPlaybackRateChange = (
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
         const value = parseFloat(event.target.value);
+        setSilentPlaybackRate(value);
         document.getElementById("silentPlaybackValue")!.textContent =
             value.toFixed(1);
         // Set the variable in extension storage
         chrome.storage.local.set({ silentPlaybackRate: value });
+        console.log("set 2");
     };
 
     const handleSilenceThresholdChange = (
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
         const value = parseFloat(event.target.value);
+        setSilenceThreshold(value);
         document.getElementById("silenceThresholdValue")!.textContent =
             value.toFixed(1);
         // Set the variable in extension storage
         chrome.storage.local.set({ silenceThreshold: value });
+        console.log("set 3");
     };
 
     useEffect(() => {
-        // Initialize the current values from extension storage on component mount
+        // Initialise the current values from extension storage on component mount
         chrome.storage.local.get(
             ["normalPlaybackRate", "silentPlaybackRate", "silenceThreshold"],
             (data) => {
-                document.getElementById("normalPlaybackValue")!.textContent =
-                    data.normalPlaybackRate || "1";
-                document.getElementById("silentPlaybackValue")!.textContent =
-                    data.silentPlaybackRate || "1";
-                document.getElementById("silenceThresholdValue")!.textContent =
-                    data.silenceThreshold || "-5.9";
+                const normalRate = data.normalPlaybackRate || 1;
+                const silentRate = data.silentPlaybackRate || 1;
+                const threshold = data.silenceThreshold || -5.9;
+
+                // Update state and UI sliders
+                setNormalPlaybackRate(normalRate);
+                setSilentPlaybackRate(silentRate);
+                setSilenceThreshold(threshold);
+
+                // Cast HTMLElement to HTMLInputElement to access the 'value' property
+                (
+                    document.getElementById(
+                        "normalPlaybackRate"
+                    ) as HTMLInputElement
+                ).value = normalRate.toString();
+                (
+                    document.getElementById(
+                        "normalPlaybackValue"
+                    ) as HTMLElement
+                ).textContent = normalRate.toFixed(1);
+
+                (
+                    document.getElementById(
+                        "silentPlaybackRate"
+                    ) as HTMLInputElement
+                ).value = silentRate.toString();
+                (
+                    document.getElementById(
+                        "silentPlaybackValue"
+                    ) as HTMLElement
+                ).textContent = silentRate.toFixed(1);
+
+                (
+                    document.getElementById(
+                        "silenceThreshold"
+                    ) as HTMLInputElement
+                ).value = threshold.toString();
+                (
+                    document.getElementById(
+                        "silenceThresholdValue"
+                    ) as HTMLElement
+                ).textContent = threshold.toFixed(1);
             }
         );
     }, []);
