@@ -6,7 +6,7 @@
     "main": "src/index.tsx",
     "scripts": {
         "clean": "rm -rf node_modules/ build/",
-        "build": "vite build && tsc src/contentScript.ts --outFile build/assets/contentScript.js",
+        "build": "vite build",
         "preview": "vite preview"
     },
     "dependencies": {
