@@ -5,6 +5,7 @@ export default function App() {
     const [normalPlaybackRate, setNormalPlaybackRate] = useState(1);
     const [silentPlaybackRate, setSilentPlaybackRate] = useState(1);
     const [silenceThreshold, setSilenceThreshold] = useState(-14);
+    const [analyserType, setAnalyserType] = useState("tabOutputAnalyser");
 
     // Slider event handlers to update the current values and store in extension storage
     const handleNormalPlaybackRateChange = (
@@ -15,7 +16,6 @@ export default function App() {
         document.getElementById("normalPlaybackValue")!.textContent =
             value.toFixed(1);
         chrome.storage.local.set({ normalPlaybackRate: value });
-        console.log("set 1");
     };
 
     const handleSilentPlaybackRateChange = (
@@ -26,7 +26,6 @@ export default function App() {
         document.getElementById("silentPlaybackValue")!.textContent =
             value.toFixed(1);
         chrome.storage.local.set({ silentPlaybackRate: value });
-        console.log("set 2");
     };
 
     const handleSilenceThresholdChange = (
@@ -37,7 +36,14 @@ export default function App() {
         document.getElementById("silenceThresholdValue")!.textContent =
             value.toFixed(1);
         chrome.storage.local.set({ silenceThreshold: value });
-        console.log("set 3");
+    };
+
+    const handleAnalyserTypeChange = (
+        event: React.ChangeEvent<HTMLSelectElement>
+    ) => {
+        const value = event.target.value;
+        console.log(value);
+        chrome.storage.local.set({ analyserType: value });
     };
 
     // Audio context flag and state
@@ -47,16 +53,23 @@ export default function App() {
     useEffect(() => {
         // Initialise the current values from extension storage on component mount
         chrome.storage.local.get(
-            ["normalPlaybackRate", "silentPlaybackRate", "silenceThreshold"],
+            [
+                "normalPlaybackRate",
+                "silentPlaybackRate",
+                "silenceThreshold",
+                "analyserType"
+            ],
             (data) => {
                 const normalRate = data.normalPlaybackRate || 1;
                 const silentRate = data.silentPlaybackRate || 1;
                 const threshold = data.silenceThreshold || -14;
+                const type = data.analyserType || "tabOutputAnalyser";
 
                 // Update state and UI sliders
                 setNormalPlaybackRate(normalRate);
                 setSilentPlaybackRate(silentRate);
                 setSilenceThreshold(threshold);
+                setAnalyserType(type);
 
                 // Cast HTMLElement to HTMLInputElement to access the 'value' property
                 (
@@ -92,11 +105,12 @@ export default function App() {
                     ) as HTMLElement
                 ).textContent = threshold.toFixed(1);
 
-                // Initialise audio context if not already initialised
-                if (!audioContextInitialised) {
-                    createAudioContext();
-                    setAudioContextInitialised(true);
-                }
+                // Set the select element value to the current analyserType
+                (
+                    document.getElementById(
+                        "analyserTypeSelect"
+                    ) as HTMLSelectElement
+                ).value = type;
             }
         );
     }, []);
@@ -191,6 +205,27 @@ export default function App() {
                     <div className="text-white">
                         Current: <span id="silenceThresholdValue">-14</span>dB
                     </div>
+                </div>
+                {/* Dropdown wrapper */}
+                <div className="flex flex-col items-center mt-4">
+                    <label
+                        htmlFor="analyserTypeSelect"
+                        className="text-white"
+                    >
+                        Analyser Type:
+                    </label>
+                    <select
+                        id="analyserTypeSelect"
+                        className="w-48 mt-1 form-select appearance-none bg-gray-600 h-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        onChange={handleAnalyserTypeChange}
+                    >
+                        <option value="tabOutputAnalyser">
+                            Tab output analyser (Default)
+                        </option>
+                        <option value="elementAnalyser">
+                            Element Analyser
+                        </option>
+                    </select>
                 </div>
             </div>
 
