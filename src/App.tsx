@@ -95,7 +95,7 @@ export default function App() {
 
     return (
         <div className="flex flex-col justify-center items-center min-h-screen bg-gray-800 text-white">
-            <div className="container flex flex-row justify-center items-center mx-4 mt-2">
+            <div className="container flex flex-row justify-center items-center">
                 <img
                     src="icons/active.png"
                     alt="Image Description"
@@ -106,108 +106,111 @@ export default function App() {
                 </h1>
             </div>
 
-            {/* Slider wrapper with horizontal margins */}
-            <div className="flex flex-col items-center mt-2 mb-6 mx-6">
-                {/* HTML sliders */}
-                <hr className="w-full h-0.5 my-4 bg-white opacity-25 rounded" />
-                <div className="flex flex-col mt-4">
-                    <div className="flex flex-row align-middle">
-                        <FaPlay className="mr-3 mt-1"></FaPlay>
-                        <label
-                            htmlFor="normalPlaybackRate"
-                            className="text-white"
-                        >
-                            Normal Speed
-                        </label>
-                    </div>
-                    <div>
-                        <input
-                            type="range"
-                            id="normalPlaybackRate"
-                            className="w-48 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600 slider-animation slider-handle"
-                            min="0.5"
-                            max="2"
-                            step="0.1"
-                            defaultValue="1"
-                            onChange={handleNormalPlaybackRateChange}
-                        />
-                        <div className="flex justify-between w-full text-white">
-                            <span>0.5x</span>
-                            <span>2x</span>
-                        </div>
-                        <div className="text-white">
-                            Current: <span id="normalPlaybackValue">1</span>x
-                        </div>
-                    </div>
-                </div>
+            <div className="flex flex-col items-center mt-6 mx-6">
                 <hr className="w-full h-0.5 my-4 bg-white opacity-25 rounded" />
 
-                <div className="flex flex-col items-center mt-4">
-                    <div className="flex flex-row align-middle">
-                        <FaFastForward className="mr-3 mt-1"></FaFastForward>
-                        <label
-                            htmlFor="silentPlaybackRate"
-                            className="text-white"
-                        >
-                            Silent Speed:
-                        </label>
+                {/* Normal Speed */}
+                <div className="flex flex-col">
+                    <div className="flex flex-row justify-between items-center">
+                        <div className="flex items-center">
+                            <FaPlay className="mr-3 mt-1" />
+                            <label
+                                htmlFor="normalPlaybackRate"
+                                className="text-white"
+                            >
+                                Normal Speed
+                            </label>
+                        </div>
+                        <div className="text-dim-orange">
+                            <span id="normalPlaybackValue">1</span>x
+                        </div>
                     </div>
-                    <div>
-                        <input
-                            type="range"
-                            id="silentPlaybackRate"
-                            className="w-48 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600 slider-animation slider-handle"
-                            min="0.5"
-                            max="2"
-                            step="0.1"
-                            defaultValue="1"
-                            onChange={handleSilentPlaybackRateChange}
-                        />
-                        <div className="flex justify-between w-full text-white">
-                            <span>0.5x</span>
-                            <span>2x</span>
-                        </div>
-                        <div className="text-white">
-                            Current: <span id="silentPlaybackValue">1</span>x
-                        </div>
+                    <input
+                        type="range"
+                        id="normalPlaybackRate"
+                        className="w-48 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600 slider-animation slider-handle"
+                        min="0.5"
+                        max="2"
+                        step="0.1"
+                        defaultValue="1"
+                        onChange={handleNormalPlaybackRateChange}
+                    />
+                    <div className="flex justify-between w-full text-white">
+                        <span>0.5x</span>
+                        <span>2x</span>
                     </div>
                 </div>
+
                 <hr className="w-full h-0.5 my-4 bg-white opacity-25 rounded" />
 
-                <div className="flex flex-col items-center mt-4">
-                    <div className="flex flex-row align-middle">
-                        <FaVolumeMute className="mr-3 mt-1"></FaVolumeMute>
-                        <label
-                            htmlFor="silenceThreshold"
-                            className="text-white"
-                        >
-                            Silence Threshold:
-                        </label>
+                {/* Silent Speed */}
+                <div className="flex flex-col">
+                    <div className="flex flex-row justify-between items-center">
+                        <div className="flex items-center">
+                            <FaFastForward className="mr-3 mt-1" />
+                            <label
+                                htmlFor="silentPlaybackRate"
+                                className="text-white"
+                            >
+                                Silent Speed
+                            </label>
+                        </div>
+                        <div className="text-dim-orange">
+                            <span id="silentPlaybackValue">1</span>x
+                        </div>
                     </div>
-                    <div>
-                        <input
-                            type="range"
-                            id="silenceThreshold"
-                            className="w-48 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600 slider-animation slider-handle"
-                            min="-24"
-                            max="0"
-                            step="0.1"
-                            defaultValue="-14"
-                            onChange={handleSilenceThresholdChange}
-                        />
-                        <div className="flex justify-between w-full text-white">
-                            <span>-24dB</span>
-                            <span>0dB</span>
+                    <input
+                        type="range"
+                        id="silentPlaybackRate"
+                        className="w-48 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600 slider-animation slider-handle"
+                        min="0.5"
+                        max="2"
+                        step="0.1"
+                        defaultValue="1"
+                        onChange={handleSilentPlaybackRateChange}
+                    />
+                    <div className="flex justify-between w-full text-white">
+                        <span>0.5x</span>
+                        <span>2x</span>
+                    </div>
+                </div>
+
+                <hr className="w-full h-0.5 my-4 bg-white opacity-25 rounded" />
+
+                {/* Silence Threshold */}
+                <div className="flex flex-col">
+                    <div className="flex flex-row justify-between items-center">
+                        <div className="flex items-center">
+                            <FaVolumeMute className="mr-3 mt-1" />
+                            <label
+                                htmlFor="silenceThreshold"
+                                className="text-white"
+                            >
+                                Silence Threshold
+                            </label>
                         </div>
-                        <div className="text-white">
-                            Current: <span id="silenceThresholdValue">-14</span>
-                            dB
+                        <div className="text-dim-orange">
+                            <span id="silenceThresholdValue">-14</span>dB
                         </div>
+                    </div>
+                    <input
+                        type="range"
+                        id="silenceThreshold"
+                        className="w-48 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600 slider-animation slider-handle"
+                        min="-24"
+                        max="0"
+                        step="0.1"
+                        defaultValue="-14"
+                        onChange={handleSilenceThresholdChange}
+                    />
+                    <div className="flex justify-between w-full text-white">
+                        <span>-24dB</span>
+                        <span>0dB</span>
                     </div>
                 </div>
             </div>
 
-            <div className="absolute bottom-4 text-white">
+            <div className="text-white mt-5">
                 Developed by{" "}
                 <a
                     className="underline"
