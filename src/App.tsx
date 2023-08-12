@@ -6,6 +6,7 @@ export default function App() {
     const [normalPlaybackRate, setNormalPlaybackRate] = useState(1);
     const [silentPlaybackRate, setSilentPlaybackRate] = useState(1);
     const [silenceThreshold, setSilenceThreshold] = useState(-14);
+    const [extensionEnabled, setExtensionEnabled] = useState(true);
 
     // Slider event handlers to update the current values and store in extension storage
     const handleNormalPlaybackRateChange = (
@@ -105,8 +106,37 @@ export default function App() {
                     Lecture Master
                 </h1>
             </div>
+            <div className="flex flex-row mt-5">
+                <p>Enable Lecture Master</p>
+                <label
+                    htmlFor="extensionToggle"
+                    className={`cursor-pointer relative w-10 h-5 rounded-full ml-2 ${
+                        extensionEnabled
+                            ? "bg-gray-100 transition-all duration-500"
+                            : "bg-bright-orange transition-all duration-500"
+                    }`}
+                >
+                    <input
+                        type="checkbox"
+                        id="extensionToggle"
+                        className="sr-only peer"
+                        checked={extensionEnabled}
+                        onChange={() => setExtensionEnabled(!extensionEnabled)}
+                    />
+                    <span
+                        className={`w-2/5 h-4/5 absolute rounded-full top-0.5 ${
+                            extensionEnabled
+                                ? "bg-gray-400 transition-all duration-500"
+                                : "bg-white transition-all duration-500"
+                        }`}
+                        style={{
+                            left: extensionEnabled ? "0.3rem" : "50%"
+                        }}
+                    />
+                </label>
+            </div>
 
-            <div className="flex flex-col items-center mt-6 mx-6">
+            <div className="flex flex-col items-center mt-2 mx-6">
                 <hr className="w-full h-0.5 my-4 bg-white opacity-25 rounded" />
 
                 {/* Normal Speed */}
