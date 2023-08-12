@@ -96,17 +96,15 @@ export default function App() {
     return (
         <div className="flex flex-col justify-center items-center min-h-screen bg-gray-800 text-white">
             <div className="container flex flex-col justify-center items-center">
-                <h1 className="text-3xl font-extrabold tracking-tight sm:text-7xl text-center mx-4 mt-2">
+                <h1 className="text-2xl font-extrabold tracking-tight sm:text-7xl text-center mx-4 mt-2">
                     Lecture Master
                 </h1>
-                <h2 className="mt-1 mb-2 px-6 text-center text-base font-semibold tracking-tight sm:text-2xl">
-                    Makes watching lectures more efficient!
-                </h2>
             </div>
 
             {/* Slider wrapper with horizontal margins */}
             <div className="flex flex-col items-center mt-2 mb-6 mx-6">
                 {/* HTML sliders */}
+                <hr className="w-full h-0.5 my-4 bg-white opacity-25 rounded" />
                 <div className="flex flex-col mt-4">
                     <div className="flex flex-row align-middle">
                         <FaPlay className="mr-3 mt-1"></FaPlay>
@@ -137,6 +135,7 @@ export default function App() {
                         </div>
                     </div>
                 </div>
+                <hr className="w-full h-0.5 my-4 bg-white opacity-25 rounded" />
 
                 <div className="flex flex-col items-center mt-4">
                     <div className="flex flex-row align-middle">
@@ -168,6 +167,7 @@ export default function App() {
                         </div>
                     </div>
                 </div>
+                <hr className="w-full h-0.5 my-4 bg-white opacity-25 rounded" />
 
                 <div className="flex flex-col items-center mt-4">
                     <div className="flex flex-row align-middle">
