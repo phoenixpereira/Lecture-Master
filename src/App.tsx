@@ -6,7 +6,15 @@ export default function App() {
     const [normalPlaybackRate, setNormalPlaybackRate] = useState(1);
     const [silentPlaybackRate, setSilentPlaybackRate] = useState(1);
     const [silenceThreshold, setSilenceThreshold] = useState(-14);
-    const [extensionEnabled, setExtensionEnabled] = useState(true);
+    const [extensionEnabled, setExtensionEnabled] = useState(false);
+
+    const handleExtensionToggle = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        const newExtensionState = !extensionEnabled;
+        setExtensionEnabled(newExtensionState);
+        chrome.storage.local.set({ extensionEnabled: newExtensionState });
+    };
 
     // Slider event handlers to update the current values and store in extension storage
     const handleNormalPlaybackRateChange = (
@@ -39,23 +47,26 @@ export default function App() {
         chrome.storage.local.set({ silenceThreshold: value });
     };
 
-    // Audio context flag and state
-    const [audioContextInitialised, setAudioContextInitialised] =
-        useState(false);
-
     useEffect(() => {
         // Initialise the current values from extension storage on component mount
         chrome.storage.local.get(
-            ["normalPlaybackRate", "silentPlaybackRate", "silenceThreshold"],
+            [
+                "normalPlaybackRate",
+                "silentPlaybackRate",
+                "silenceThreshold",
+                "extensionEnabled"
+            ],
             (data) => {
                 const normalRate = data.normalPlaybackRate || 1;
                 const silentRate = data.silentPlaybackRate || 1;
                 const threshold = data.silenceThreshold || -14;
+                const enabled = data.extensionEnabled || false;
 
                 // Update state and UI sliders
                 setNormalPlaybackRate(normalRate);
                 setSilentPlaybackRate(silentRate);
                 setSilenceThreshold(threshold);
+                setExtensionEnabled(enabled);
 
                 // Cast HTMLElement to HTMLInputElement to access the 'value' property
                 (
@@ -121,7 +132,7 @@ export default function App() {
                         id="extensionToggle"
                         className="sr-only peer"
                         checked={extensionEnabled}
-                        onChange={() => setExtensionEnabled(!extensionEnabled)}
+                        onChange={handleExtensionToggle}
                     />
                     <span
                         className={`w-2/5 h-4/5 absolute rounded-full top-0.5 ${
@@ -136,7 +147,11 @@ export default function App() {
                 </label>
             </div>
 
-            <div className="flex flex-col items-center mt-2 mx-6">
+            <div
+                className={`flex flex-col items-center mt-2 mx-6 ${
+                    extensionEnabled ? "opacity-50 pointer-events-none" : ""
+                }`}
+            >
                 <hr className="w-full h-0.5 my-4 bg-white opacity-25 rounded" />
 
                 {/* Normal Speed */}
