@@ -95,8 +95,13 @@ export default function App() {
 
     return (
         <div className="flex flex-col justify-center items-center min-h-screen bg-gray-800 text-white">
-            <div className="container flex flex-col justify-center items-center">
-                <h1 className="text-2xl font-extrabold tracking-tight sm:text-7xl text-center mx-4 mt-2">
+            <div className="container flex flex-row justify-center items-center mx-4 mt-2">
+                <img
+                    src="icons/active.png"
+                    alt="Image Description"
+                    className="w-8 h-8 mr-2"
+                />
+                <h1 className="text-xl font-extrabold tracking-tight sm:text-7xl text-center">
                     Lecture Master
                 </h1>
             </div>
