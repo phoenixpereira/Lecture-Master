@@ -113,9 +113,10 @@ export default function App() {
                     alt="Image Description"
                     className="w-8 h-8 mr-2"
                 />
-                <h1 className="text-lg font-bold tracking-tight sm:text-7xl text-center">
+                <h1 className="text-lg font-bold text-center">
                     Lecture Master
                 </h1>
+                <p className="ml-4">v0.1</p>
             </div>
             <div className="container flex flex-row justify-center items-center mt-5 ml-8">
                 <h3 className="text-base">Enable Lecture Master</h3>
@@ -152,7 +153,9 @@ export default function App() {
 
             <div
                 className={`flex flex-col mt-2 mx-8 ${
-                    extensionEnabled ? "opacity-50 pointer-events-none" : ""
+                    extensionEnabled
+                        ? "opacity-50 pointer-events-none duration-300"
+                        : "duration-300"
                 }`}
             >
                 {/* Normal Speed */}
