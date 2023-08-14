@@ -106,26 +106,27 @@ export default function App() {
     }, []);
 
     return (
-        <div className="flex flex-col justify-center items-center min-h-screen bg-gray-800 text-white">
-            <div className="container flex flex-row justify-center items-center">
+        <div className="flex flex-col justify-center min-h-screen bg-gray-800 text-white">
+            <div className="container flex flex-row justify-center items-center self-center">
                 <img
                     src="icons/active.png"
                     alt="Image Description"
                     className="w-8 h-8 mr-2"
                 />
-                <h1 className="text-xl font-extrabold tracking-tight sm:text-7xl text-center">
+                <h1 className="text-lg font-bold tracking-tight sm:text-7xl text-center">
                     Lecture Master
                 </h1>
             </div>
-            <div className="flex flex-row mt-5">
-                <p>Enable Lecture Master</p>
+            <div className="container flex flex-row justify-center items-center mt-5 ml-8">
+                <h3 className="text-base">Enable Lecture Master</h3>
                 <label
                     htmlFor="extensionToggle"
-                    className={`cursor-pointer relative w-10 h-5 rounded-full ml-2 ${
+                    className={`cursor-pointer relative w-10 h-5 rounded-full ml-2 mr-16 ${
                         extensionEnabled
-                            ? "bg-gray-100 transition-all duration-500"
-                            : "bg-bright-orange transition-all duration-500"
+                            ? "bg-gray-100 transition-all duration-300"
+                            : "bg-bright-orange transition-all duration-300"
                     }`}
+                    style={{ marginLeft: "auto" }} // Align label to the right
                 >
                     <input
                         type="checkbox"
@@ -137,8 +138,8 @@ export default function App() {
                     <span
                         className={`w-2/5 h-4/5 absolute rounded-full top-0.5 ${
                             extensionEnabled
-                                ? "bg-gray-400 transition-all duration-500"
-                                : "bg-white transition-all duration-500"
+                                ? "bg-gray-400 transition-all duration-300"
+                                : "bg-white transition-all duration-300"
                         }`}
                         style={{
                             left: extensionEnabled ? "0.3rem" : "50%"
@@ -147,13 +148,13 @@ export default function App() {
                 </label>
             </div>
 
+            <hr className="w-64 h-0.5 my-4 ml-8 bg-white opacity-25 rounded" />
+
             <div
-                className={`flex flex-col items-center mt-2 mx-6 ${
+                className={`flex flex-col mt-2 mx-8 ${
                     extensionEnabled ? "opacity-50 pointer-events-none" : ""
                 }`}
             >
-                <hr className="w-full h-0.5 my-4 bg-white opacity-25 rounded" />
-
                 {/* Normal Speed */}
                 <div className="flex flex-col">
                     <div className="flex flex-row justify-between items-center">
@@ -173,16 +174,16 @@ export default function App() {
                     <input
                         type="range"
                         id="normalPlaybackRate"
-                        className="w-48 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600 slider-animation slider-handle"
-                        min="0.5"
-                        max="2"
+                        className="w-64 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600 slider-animation slider-handle"
+                        min="0.1"
+                        max="5"
                         step="0.1"
                         defaultValue="1"
                         onChange={handleNormalPlaybackRateChange}
                     />
                     <div className="flex justify-between w-full text-white">
-                        <span>0.5x</span>
-                        <span>2x</span>
+                        <span>0.1x</span>
+                        <span>5x</span>
                     </div>
                 </div>
 
@@ -207,16 +208,16 @@ export default function App() {
                     <input
                         type="range"
                         id="silentPlaybackRate"
-                        className="w-48 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600 slider-animation slider-handle"
-                        min="0.5"
-                        max="2"
+                        className="w-64 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600 slider-animation slider-handle"
+                        min="0.1"
+                        max="5"
                         step="0.1"
                         defaultValue="1"
                         onChange={handleSilentPlaybackRateChange}
                     />
                     <div className="flex justify-between w-full text-white">
-                        <span>0.5x</span>
-                        <span>2x</span>
+                        <span>0.1x</span>
+                        <span>5x</span>
                     </div>
                 </div>
 
@@ -241,7 +242,7 @@ export default function App() {
                     <input
                         type="range"
                         id="silenceThreshold"
-                        className="w-48 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600 slider-animation slider-handle"
+                        className="w-64 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600 slider-animation slider-handle"
                         min="-24"
                         max="0"
                         step="0.1"
@@ -255,7 +256,7 @@ export default function App() {
                 </div>
             </div>
 
-            <div className="text-white mt-5">
+            <div className="text-white mt-5 self-center">
                 Developed by{" "}
                 <a
                     className="underline"
