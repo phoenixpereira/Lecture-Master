@@ -8,6 +8,30 @@ export default function App() {
     const [silenceThreshold, setSilenceThreshold] = useState(-14);
     const [extensionEnabled, setExtensionEnabled] = useState(false);
 
+    // Volume meter related state
+    const [videoVolume, setVideoVolume] = useState(0);
+
+    function calculateSliderPercentage(
+        value: number,
+        min: number,
+        max: number
+    ): number {
+        return ((value - min) / (max - min)) * 100;
+    }
+
+    // Calculate the volume meter fill percentage based on the video's volume
+    const volumeMeterFill = {
+        backgroundImage: `linear-gradient(to right, #B3FFB3 0%, #B3FFB3 ${calculateSliderPercentage(
+            videoVolume,
+            -24,
+            0
+        )}%, #313638 ${calculateSliderPercentage(
+            videoVolume,
+            -24,
+            0
+        )}%, #313638 100%)`
+    };
+
     const handleExtensionToggle = (
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
@@ -48,6 +72,13 @@ export default function App() {
     };
 
     useEffect(() => {
+        chrome.runtime.onMessage.addListener(
+            (message, sender, sendResponse) => {
+                if (message.action === "updateVolumeMeter") {
+                    setVideoVolume(message.volume.toFixed(2));
+                }
+            }
+        );
         // Initialise the current values from extension storage on component mount
         chrome.storage.local.get(
             [
@@ -110,13 +141,32 @@ export default function App() {
             <div className="container flex flex-row justify-center items-center self-center">
                 <img
                     src="icons/active.png"
-                    alt="Image Description"
-                    className="w-8 h-8 mr-2"
+                    alt="Active Image"
+                    className={`w-8 h-8 mr-2 transition-opacity absolute ${
+                        extensionEnabled ? "opacity-0" : "opacity-100"
+                    }`}
+                    style={{
+                        left: 65,
+                        zIndex: extensionEnabled ? 1 : 2,
+                        transition: "opacity 300ms ease-in-out"
+                    }}
                 />
-                <h1 className="text-lg font-bold text-center">
+                <img
+                    src="icons/inactive.png"
+                    alt="Inactive Image"
+                    className={`w-8 h-8 mr-2 transition-opacity absolute ${
+                        extensionEnabled ? "opacity-100" : "opacity-0"
+                    }`}
+                    style={{
+                        left: 65,
+                        zIndex: extensionEnabled ? 2 : 1,
+                        transition: "opacity 300ms ease-in-out"
+                    }}
+                />
+
+                <h1 className="text-lg font-bold tracking-tight sm:text-7xl text-center ml-6">
                     Lecture Master
                 </h1>
-                <p className="ml-4">v0.1</p>
             </div>
             <div className="container flex flex-row justify-center items-center mt-5 ml-8">
                 <h3 className="text-base">Enable Lecture Master</h3>
@@ -127,7 +177,7 @@ export default function App() {
                             ? "bg-gray-100 transition-all duration-300"
                             : "bg-bright-orange transition-all duration-300"
                     }`}
-                    style={{ marginLeft: "auto" }} // Align label to the right
+                    style={{ marginLeft: "auto" }}
                 >
                     <input
                         type="checkbox"
@@ -148,8 +198,31 @@ export default function App() {
                     />
                 </label>
             </div>
-
-            <hr className="w-64 h-0.5 my-4 ml-8 bg-white opacity-25 rounded" />
+            {/* Volume Meter */}
+            <div
+                className={`flex flex-col ml-8 mt-2 ${
+                    extensionEnabled
+                        ? "opacity-50 duration-300"
+                        : "duration-300"
+                }`}
+            >
+                <div className="flex flex-row justify-between items-center">
+                    <div className="flex items-center">
+                        <FaVolumeMute className="mr-3 mt-1" />
+                        <label
+                            htmlFor="volumeMeter"
+                            className="text-white"
+                        >
+                            Volume Meter
+                        </label>
+                    </div>
+                </div>
+                <div
+                    id="volumeMeter"
+                    className="w-64 h-6 bg-gray-600 rounded-full"
+                    style={volumeMeterFill}
+                ></div>
+            </div>
 
             <div
                 className={`flex flex-col mt-2 mx-8 ${
@@ -158,6 +231,49 @@ export default function App() {
                         : "duration-300"
                 }`}
             >
+                {/* Silence Threshold */}
+                <div className="flex flex-col">
+                    <div className="flex flex-row justify-between items-center">
+                        <div className="flex items-center">
+                            <FaVolumeMute className="mr-3 mt-1" />
+                            <label
+                                htmlFor="silenceThreshold"
+                                className="text-white"
+                            >
+                                Silence Threshold
+                            </label>
+                        </div>
+                        <div className="text-dim-orange">
+                            <span id="silenceThresholdValue">-14</span>dB
+                        </div>
+                    </div>
+                    <input
+                        type="range"
+                        id="silenceThreshold"
+                        className="w-64 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600 slider-no-handle"
+                        style={{
+                            backgroundImage: `linear-gradient(to right, #f09d51 0%, #f09d51 ${calculateSliderPercentage(
+                                silenceThreshold,
+                                -24,
+                                0
+                            )}%, #313638 ${calculateSliderPercentage(
+                                silenceThreshold,
+                                -24,
+                                0
+                            )}%, #313638 100%)`
+                        }}
+                        min="-24"
+                        max="0"
+                        step="0.1"
+                        defaultValue="-14"
+                        onChange={handleSilenceThresholdChange}
+                    />
+                    <div className="flex justify-between w-full text-white">
+                        <span>-24dB</span>
+                        <span>0dB</span>
+                    </div>
+                </div>
+                <hr className="w-full h-0.5 my-4 bg-white opacity-25 rounded" />
                 {/* Normal Speed */}
                 <div className="flex flex-col">
                     <div className="flex flex-row justify-between items-center">
@@ -177,7 +293,18 @@ export default function App() {
                     <input
                         type="range"
                         id="normalPlaybackRate"
-                        className="w-64 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600 slider-animation slider-handle"
+                        className="w-64 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600 slider-no-handle"
+                        style={{
+                            backgroundImage: `linear-gradient(to right, #f09d51 0%, #f09d51 ${calculateSliderPercentage(
+                                normalPlaybackRate,
+                                0.1,
+                                5
+                            )}%, #313638 ${calculateSliderPercentage(
+                                normalPlaybackRate,
+                                0.1,
+                                5
+                            )}%, #313638 100%)`
+                        }}
                         min="0.1"
                         max="5"
                         step="0.1"
@@ -211,7 +338,18 @@ export default function App() {
                     <input
                         type="range"
                         id="silentPlaybackRate"
-                        className="w-64 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600 slider-animation slider-handle"
+                        className="w-64 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600 slider-no-handle"
+                        style={{
+                            backgroundImage: `linear-gradient(to right, #f09d51 0%, #f09d51 ${calculateSliderPercentage(
+                                silentPlaybackRate,
+                                0.1,
+                                5
+                            )}%, #313638 ${calculateSliderPercentage(
+                                silentPlaybackRate,
+                                0.1,
+                                5
+                            )}%, #313638 100%)`
+                        }}
                         min="0.1"
                         max="5"
                         step="0.1"
@@ -221,40 +359,6 @@ export default function App() {
                     <div className="flex justify-between w-full text-white">
                         <span>0.1x</span>
                         <span>5x</span>
-                    </div>
-                </div>
-
-                <hr className="w-full h-0.5 my-4 bg-white opacity-25 rounded" />
-
-                {/* Silence Threshold */}
-                <div className="flex flex-col">
-                    <div className="flex flex-row justify-between items-center">
-                        <div className="flex items-center">
-                            <FaVolumeMute className="mr-3 mt-1" />
-                            <label
-                                htmlFor="silenceThreshold"
-                                className="text-white"
-                            >
-                                Silence Threshold
-                            </label>
-                        </div>
-                        <div className="text-dim-orange">
-                            <span id="silenceThresholdValue">-14</span>dB
-                        </div>
-                    </div>
-                    <input
-                        type="range"
-                        id="silenceThreshold"
-                        className="w-64 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600 slider-animation slider-handle"
-                        min="-24"
-                        max="0"
-                        step="0.1"
-                        defaultValue="-14"
-                        onChange={handleSilenceThresholdChange}
-                    />
-                    <div className="flex justify-between w-full text-white">
-                        <span>-24dB</span>
-                        <span>0dB</span>
                     </div>
                 </div>
             </div>

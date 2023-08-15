@@ -5,7 +5,7 @@
 html,
 body,
 #root {
-    height: 30rem;
+    height: 32rem;
     width: 20rem;
 }
 
@@ -13,83 +13,11 @@ audio::-webkit-media-controls-panel {
     background-color: white;
 }
 
-/* index.css or styles.css */
-@keyframes squeeze {
-    0%,
-    100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(0.8);
-    }
+/* Hide the default slider handle */
+.slider-no-handle::-webkit-slider-thumb {
+    opacity: 0;
 }
 
-.slider-animation::-webkit-slider-thumb {
-    animation: squeeze 0.5s;
-}
-
-.slider-animation::-moz-range-thumb {
-    animation: squeeze 0.5s;
-}
-
-.slider-animation::-ms-thumb {
-    animation: squeeze 0.5s;
-}
-
-.slider-animation::-o-range-thumb {
-    animation: squeeze 0.5s;
-}
-
-.slider-animation::-webkit-slider-thumb:active {
-    transform: scale(0.8);
-}
-
-.slider-animation::-moz-range-thumb:active {
-    transform: scale(0.8);
-}
-
-.slider-animation::-ms-thumb:active {
-    transform: scale(0.8);
-}
-
-.slider-animation::-o-range-thumb:active {
-    transform: scale(0.8);
-}
-
-/* Custom CSS for slider handles */
-input[type="range"]::-webkit-slider-thumb {
-    width: 1.5em;
-    height: 1.5em;
-    background-color: #4299e1; /* Blue color */
-    border: 0.4em solid #fff; /* White border */
-    border-radius: 50%;
-    cursor: pointer;
-    -webkit-appearance: none;
-}
-
-input[type="range"]::-moz-range-thumb {
-    width: 1.5em;
-    height: 1.5em;
-    background-color: #4299e1; /* Blue color */
-    border: 0.4em solid #fff; /* White border */
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-input[type="range"]::-ms-thumb {
-    width: 1.5em;
-    height: 1.5em;
-    background-color: #4299e1; /* Blue color */
-    border: 0.4em solid #fff; /* White border */
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-input[type="range"]::-o-range-thumb {
-    width: 1.5em;
-    height: 1.5em;
-    background-color: #4299e1; /* Blue color */
-    border: 0.4em solid #fff; /* White border */
-    border-radius: 50%;
-    cursor: pointer;
+.slider-no-handle::-moz-range-thumb {
+    opacity: 0;
 }

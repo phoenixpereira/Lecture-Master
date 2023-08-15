@@ -100,9 +100,13 @@ function getVideoVolume(video: HTMLMediaElement) {
 
     if (!isPausedOrEnded && !isExtensionEnabled) {
         chrome.runtime.sendMessage({ action: "setIconActive" });
+        chrome.runtime.sendMessage({
+            action: "updateVolumeMeter",
+            volume: volumeInDecibels
+        });
         setTimeout(() => {
             getVideoVolume(video);
-        }, 200); // Run the function again after 200 milliseconds
+        }, 200); // Run the function again after 20 milliseconds
     } else {
         chrome.runtime.sendMessage({ action: "setIconInactive" });
     }
