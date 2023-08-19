@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaPlay, FaFastForward, FaVolumeMute } from "react-icons/fa";
-import Slider from "./Slider";
+import Slider from "./components/Slider";
+import ExtensionToggle from "./components/ExtensionToggle";
 
 export default function App() {
     // State variables to hold the current values
@@ -58,8 +59,8 @@ export default function App() {
         storageKey: string
     ) => {
         const value = parseFloat(event.target.value);
-        setStateFunction(value); // Update the state variable
-        chrome.storage.local.set({ [storageKey]: value }); // Update the storage
+        setStateFunction(value);
+        chrome.storage.local.set({ [storageKey]: value });
     };
 
     useEffect(() => {
@@ -91,31 +92,7 @@ export default function App() {
         <div className="flex flex-col justify-center min-h-screen bg-gray-800 text-white">
             {/* Header */}
             <div className="container flex flex-row justify-center items-center self-center">
-                <img
-                    src="icons/active.png"
-                    alt="Active Image"
-                    className={`w-8 h-8 mr-2 transition-opacity absolute ${
-                        extensionEnabled ? "opacity-0" : "opacity-100"
-                    }`}
-                    style={{
-                        left: 65,
-                        zIndex: extensionEnabled ? 1 : 2,
-                        transition: "opacity 300ms ease-in-out"
-                    }}
-                />
-                <img
-                    src="icons/inactive.png"
-                    alt="Inactive Image"
-                    className={`w-8 h-8 mr-2 transition-opacity absolute ${
-                        extensionEnabled ? "opacity-100" : "opacity-0"
-                    }`}
-                    style={{
-                        left: 65,
-                        zIndex: extensionEnabled ? 2 : 1,
-                        transition: "opacity 300ms ease-in-out"
-                    }}
-                />
-
+                <ExtensionToggle extensionEnabled={extensionEnabled} />
                 <h1 className="text-lg font-bold tracking-tight sm:text-7xl text-center ml-6">
                     Lecture Master
                 </h1>
