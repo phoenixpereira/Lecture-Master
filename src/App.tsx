@@ -36,9 +36,7 @@ export default function App() {
         )}%, #313638 100%)`
     };
 
-    const handleExtensionToggle = (
-        event: React.ChangeEvent<HTMLInputElement>
-    ) => {
+    const handleExtensionToggle = () => {
         const newExtensionState = !extensionEnabled;
         setExtensionEnabled(newExtensionState);
         chrome.storage.local.set({ extensionEnabled: newExtensionState });
@@ -174,22 +172,16 @@ export default function App() {
             </div>
             <div className="container flex flex-row justify-center items-center mt-5 ml-8">
                 <h3 className="text-base">Enable Lecture Master</h3>
-                <label
-                    htmlFor="extensionToggle"
+                <button
+                    id="extensionToggle"
                     className={`cursor-pointer relative w-10 h-5 rounded-full ml-2 mr-16 ${
                         extensionEnabled
                             ? "bg-gray-100 transition-all duration-300"
                             : "bg-bright-orange transition-all duration-300"
                     }`}
                     style={{ marginLeft: "auto" }}
+                    onClick={handleExtensionToggle}
                 >
-                    <input
-                        type="checkbox"
-                        id="extensionToggle"
-                        className="sr-only peer"
-                        checked={extensionEnabled}
-                        onChange={handleExtensionToggle}
-                    />
                     <span
                         className={`w-2/5 h-4/5 absolute rounded-full top-0.5 ${
                             extensionEnabled
@@ -200,7 +192,7 @@ export default function App() {
                             left: extensionEnabled ? "0.3rem" : "50%"
                         }}
                     />
-                </label>
+                </button>
             </div>
             <div
                 className={`flex flex-col mt-2 mx-8 ${
@@ -233,7 +225,7 @@ export default function App() {
                     <input
                         type="range"
                         id="silenceThreshold"
-                        className="w-64 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600 slider-no-handle z-10"
+                        className="w-64 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full slider-no-handle z-10"
                         style={{
                             backgroundImage: `linear-gradient(to right, #f09d51 0%, #f09d51 ${calculateSliderPercentage(
                                 silenceThreshold,
@@ -276,7 +268,7 @@ export default function App() {
                     <input
                         type="range"
                         id="normalPlaybackRate"
-                        className="w-64 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600 slider-no-handle"
+                        className="w-64 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full slider-no-handle"
                         style={{
                             backgroundImage: `linear-gradient(to right, #f09d51 0%, #f09d51 ${calculateSliderPercentage(
                                 normalPlaybackRate,
@@ -321,7 +313,7 @@ export default function App() {
                     <input
                         type="range"
                         id="silentPlaybackRate"
-                        className="w-64 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600 slider-no-handle"
+                        className="w-64 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full slider-no-handle"
                         style={{
                             backgroundImage: `linear-gradient(to right, #f09d51 0%, #f09d51 ${calculateSliderPercentage(
                                 silentPlaybackRate,
