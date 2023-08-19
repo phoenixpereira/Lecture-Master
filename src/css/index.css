@@ -21,3 +21,36 @@ audio::-webkit-media-controls-panel {
 .slider-no-handle::-moz-range-thumb {
     opacity: 0;
 }
+
+.slider {
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-image: linear-gradient(
+        to right,
+        #f09d51 0%,
+        #f09d51 0%,
+        #313638 0%,
+        #313638 100%
+    );
+}
+
+.orange-slider {
+    background-image: linear-gradient(
+        to right,
+        #f09d51 0%,
+        #f09d51 0%,
+        #313638 0%,
+        #313638 100%
+    );
+}
+
+.green-slider {
+    background-image: linear-gradient(
+        to right,
+        #b3ffb3 0%,
+        #b3ffb3 0%,
+        #313638 0%,
+        #313638 100%
+    );
+}

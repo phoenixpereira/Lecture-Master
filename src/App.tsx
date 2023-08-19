@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FaPlay, FaFastForward, FaVolumeMute } from "react-icons/fa";
+import Slider from "./Slider";
 
 export default function App() {
     // State variables to hold the current values
@@ -153,138 +154,75 @@ export default function App() {
             >
                 <hr className="w-full h-0.5 my-4 bg-white opacity-25 rounded" />
                 {/* Silence Threshold */}
-                <div className="flex flex-col">
-                    <div className="flex flex-row justify-between items-center">
-                        <div className="flex items-center">
-                            <FaVolumeMute className="mr-3 mt-1" />
-                            <label
-                                htmlFor="silenceThreshold"
-                                className="text-white"
-                            >
-                                Silence Threshold
-                            </label>
-                        </div>
-                        <div className="text-dim-orange">
-                            <span>{silenceThreshold.toFixed(1)}</span>dB
-                        </div>
-                    </div>
-                    <div
-                        id="volumeMeter"
-                        className="w-[16.65rem] h-8 bg-gray-600 rounded-full absolute -translate-x-[0.325rem] translate-y-[1.35rem]"
-                        style={volumeMeterFill}
-                    ></div>
-                    <input
-                        type="range"
-                        id="silenceThreshold"
-                        className="w-64 mt-2 mb-1 form-range appearance-none bg-gray-600 h-6 rounded-full slider-no-handle z-10"
-                        style={generateSliderBackgroundStyle(
-                            silenceThreshold,
-                            -24,
-                            0
-                        )}
-                        min="-24"
-                        max="0"
-                        step="0.1"
-                        defaultValue="-14"
-                        onChange={(event) =>
-                            handleInputChange(
-                                event,
-                                setSilenceThreshold,
-                                "silenceThreshold"
-                            )
-                        }
-                    />
-                    <div className="flex justify-between w-full text-white">
-                        <span>-24dB</span>
-                        <span>0dB</span>
-                    </div>
-                </div>
+                <Slider
+                    value={silenceThreshold}
+                    minValue={-24}
+                    maxValue={0}
+                    onChange={(event) =>
+                        handleInputChange(
+                            event,
+                            setSilenceThreshold,
+                            "silenceThreshold"
+                        )
+                    }
+                    backgroundStyle={generateSliderBackgroundStyle(
+                        silenceThreshold,
+                        -24,
+                        0
+                    )}
+                    icon={<FaVolumeMute className="mr-3 mt-1" />}
+                    label="Silence Threshold"
+                    unit="dB"
+                />
+                <div
+                    id="volumeMeter"
+                    className="w-[16.65rem] h-8 bg-gray-600 rounded-full absolute -translate-x-[0.325rem] translate-y-[3.5rem]"
+                    style={volumeMeterFill}
+                ></div>
                 <hr className="w-full h-0.5 my-4 bg-white opacity-25 rounded" />
                 {/* Normal Speed */}
-                <div className="flex flex-col">
-                    <div className="flex flex-row justify-between items-center">
-                        <div className="flex items-center">
-                            <FaPlay className="mr-3 mt-1" />
-                            <label
-                                htmlFor="normalPlaybackRate"
-                                className="text-white"
-                            >
-                                Normal Speed
-                            </label>
-                        </div>
-                        <div className="text-dim-orange">
-                            <span>{normalPlaybackRate.toFixed(1)}</span>x
-                        </div>
-                    </div>
-                    <input
-                        type="range"
-                        id="normalPlaybackRate"
-                        className="w-64 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full slider-no-handle"
-                        style={generateSliderBackgroundStyle(
-                            normalPlaybackRate,
-                            0.1,
-                            5
-                        )}
-                        min="0.1"
-                        max="5"
-                        step="0.1"
-                        defaultValue="1"
-                        onChange={(event) =>
-                            handleInputChange(
-                                event,
-                                setNormalPlaybackRate,
-                                "normalPlaybackRate"
-                            )
-                        }
-                    />
-                    <div className="flex justify-between w-full text-white">
-                        <span>0.1x</span>
-                        <span>5x</span>
-                    </div>
-                </div>
+                <Slider
+                    value={normalPlaybackRate}
+                    minValue={0.1}
+                    maxValue={5}
+                    onChange={(event) =>
+                        handleInputChange(
+                            event,
+                            setNormalPlaybackRate,
+                            "normalPlaybackRate"
+                        )
+                    }
+                    backgroundStyle={generateSliderBackgroundStyle(
+                        normalPlaybackRate,
+                        0.1,
+                        5
+                    )}
+                    icon={<FaPlay className="mr-3 mt-1" />}
+                    label="Normal Speed"
+                    unit="x"
+                />
                 <hr className="w-full h-0.5 my-4 bg-white opacity-25 rounded" />
                 {/* Silent Speed */}
-                <div className="flex flex-col">
-                    <div className="flex flex-row justify-between items-center">
-                        <div className="flex items-center">
-                            <FaFastForward className="mr-3 mt-1" />
-                            <label
-                                htmlFor="silentPlaybackRate"
-                                className="text-white"
-                            >
-                                Silent Speed
-                            </label>
-                        </div>
-                        <div className="text-dim-orange">
-                            <span>{silentPlaybackRate.toFixed(1)}</span>x
-                        </div>
-                    </div>
-                    <input
-                        type="range"
-                        id="silentPlaybackRate"
-                        className="w-64 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full slider-no-handle"
-                        style={generateSliderBackgroundStyle(
-                            silentPlaybackRate,
-                            0.1,
-                            5
-                        )}
-                        min="0.1"
-                        max="5"
-                        step="0.1"
-                        defaultValue="1"
-                        onChange={(event) =>
-                            handleInputChange(
-                                event,
-                                setSilentPlaybackRate,
-                                "silentPlaybackRate"
-                            )
-                        }
-                    />
-                    <div className="flex justify-between w-full text-white">
-                        <span>0.1x</span>
-                        <span>5x</span>
-                    </div>
-                </div>
+                <Slider
+                    value={silentPlaybackRate}
+                    minValue={0.1}
+                    maxValue={5}
+                    onChange={(event) =>
+                        handleInputChange(
+                            event,
+                            setSilentPlaybackRate,
+                            "silentPlaybackRate"
+                        )
+                    }
+                    backgroundStyle={generateSliderBackgroundStyle(
+                        silentPlaybackRate,
+                        0.1,
+                        5
+                    )}
+                    icon={<FaFastForward className="mr-3 mt-1" />}
+                    label="Silent Speed"
+                    unit="x"
+                />
             </div>
             {/* Footer */}
             <div className="text-white mt-5 self-center">
