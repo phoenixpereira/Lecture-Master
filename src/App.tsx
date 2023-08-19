@@ -198,32 +198,6 @@ export default function App() {
                     />
                 </label>
             </div>
-            {/* Volume Meter */}
-            <div
-                className={`flex flex-col ml-8 mt-2 ${
-                    extensionEnabled
-                        ? "opacity-50 duration-300"
-                        : "duration-300"
-                }`}
-            >
-                <div className="flex flex-row justify-between items-center">
-                    <div className="flex items-center">
-                        <FaVolumeMute className="mr-3 mt-1" />
-                        <label
-                            htmlFor="volumeMeter"
-                            className="text-white"
-                        >
-                            Volume Meter
-                        </label>
-                    </div>
-                </div>
-                <div
-                    id="volumeMeter"
-                    className="w-64 h-6 bg-gray-600 rounded-full"
-                    style={volumeMeterFill}
-                ></div>
-            </div>
-
             <div
                 className={`flex flex-col mt-2 mx-8 ${
                     extensionEnabled
@@ -247,10 +221,15 @@ export default function App() {
                             <span id="silenceThresholdValue">-14</span>dB
                         </div>
                     </div>
+                    <div
+                        id="volumeMeter"
+                        className="w-[16.65rem] h-8 bg-gray-600 rounded-full absolute -translate-x-[0.325rem] translate-y-[1.125rem] "
+                        style={volumeMeterFill}
+                    ></div>
                     <input
                         type="range"
                         id="silenceThreshold"
-                        className="w-64 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600 slider-no-handle"
+                        className="w-64 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600 slider-no-handle z-10"
                         style={{
                             backgroundImage: `linear-gradient(to right, #f09d51 0%, #f09d51 ${calculateSliderPercentage(
                                 silenceThreshold,
