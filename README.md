@@ -10,32 +10,27 @@ A Chrome extension to make watching lectures more efficient!
 - **Customizable Settings:** You can configure normal and silent playback rates, silence threshold, and enable/disable the extension.
 - **Wide Playback Range:** Offers an extended playback speed range from 0.1x to 5x.
 
-## Quick Start
+## Installation
+You can install Lecture Master by downloading it through the releases tab or by building it yourself.
+
+**How to load the extension into Chrome:**
+
+Open Chrome and navigate to `chrome://extensions/`.
+- Enable "Developer mode".
+- Click "Load unpacked".
+- Select the `build` folder from the cloned repository or the `Lecture-Master` folder if you downloaded it from releases.
+- The extension should now be loaded and running in your browser.
+
+## Development
 To get started, clone the repository and install the dependencies:
 
 ```bash
 git clone https://github.com/phoenixpereira/Lecture-Master.git
 cd Lecture-Master
-yarn
 yarn install
 ```
 
 Next, build the extension using vite:
-
-```bash
-yarn build
-```
-
-Finally, load the extension into Chrome:
-
-Open Chrome and navigate to `chrome://extensions/`.
-- Enable "Developer mode".
-- Click "Load unpacked".
-- Select the `build` folder from the cloned repository.
-- The extension should now be loaded and running in your browser.
-
-## Development
-To build the extension yourself, run the following command:
 
 ```bash
 yarn build
