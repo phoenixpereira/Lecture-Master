@@ -77,14 +77,6 @@ function getVideoVolume(video: HTMLMediaElement) {
 
     // Calculate the volume in decibels using the normalized amplitude
     const volumeInDecibels = 10 * Math.log10(normalizedAmplitude);
-    console.log(
-        "Actual Volume: ",
-        volumeInDecibels,
-        "Threshold: ",
-        silenceThreshold,
-        "Speed: ",
-        videoElement!.playbackRate
-    );
 
     if (volumeInDecibels >= silenceThreshold) {
         silenceCounter = 0;
