@@ -7,19 +7,16 @@ export default function App() {
     const [silentPlaybackRate, setSilentPlaybackRate] = useState(1);
     const [silenceThreshold, setSilenceThreshold] = useState(-14);
     const [extensionEnabled, setExtensionEnabled] = useState(false);
-
-    // Volume meter related state
     const [videoVolume, setVideoVolume] = useState(0);
+    const isAudioSkipping = videoVolume < silenceThreshold;
 
-    function calculateSliderPercentage(
+    const calculateSliderPercentage = (
         value: number,
         min: number,
         max: number
-    ): number {
-        return ((value - min) / (max - min)) * 100;
-    }
+    ): number => ((value - min) / (max - min)) * 100;
 
-    const isAudioSkipping = videoVolume < silenceThreshold;
+    // Calculate volume meter fill based on video's volume
     const volumeMeterFill = {
         backgroundImage: `linear-gradient(to right, ${
             isAudioSkipping ? "#B3FFB3" : "#f06543"
@@ -36,52 +33,48 @@ export default function App() {
         )}%, #313638 100%)`
     };
 
+    const generateSliderBackgroundStyle = (
+        value: number,
+        minValue: number,
+        maxValue: number
+    ): React.CSSProperties => {
+        const percentage = calculateSliderPercentage(value, minValue, maxValue);
+        return {
+            backgroundImage: `linear-gradient(to right, ${"#f09d51"} 0%, ${"#f09d51"} ${percentage}%, #313638 ${percentage}%, #313638 100%)`
+        };
+    };
+
+    // Handle extension toggle via keyboard
     const handleExtensionToggle = () => {
         const newExtensionState = !extensionEnabled;
         setExtensionEnabled(newExtensionState);
         chrome.storage.local.set({ extensionEnabled: newExtensionState });
     };
 
-    // Slider event handlers to update the current values and store in extension storage
-    const handleNormalPlaybackRateChange = (
-        event: React.ChangeEvent<HTMLInputElement>
+    const handleInputChange = (
+        event: React.ChangeEvent<HTMLInputElement>,
+        setStateFunction: React.Dispatch<React.SetStateAction<number>>,
+        storageKey: string
     ) => {
         const value = parseFloat(event.target.value);
-        setNormalPlaybackRate(value);
-        document.getElementById("normalPlaybackValue")!.textContent =
-            value.toFixed(1);
-        chrome.storage.local.set({ normalPlaybackRate: value });
-    };
-
-    const handleSilentPlaybackRateChange = (
-        event: React.ChangeEvent<HTMLInputElement>
-    ) => {
-        const value = parseFloat(event.target.value);
-        setSilentPlaybackRate(value);
-        document.getElementById("silentPlaybackValue")!.textContent =
-            value.toFixed(1);
-        chrome.storage.local.set({ silentPlaybackRate: value });
-    };
-
-    const handleSilenceThresholdChange = (
-        event: React.ChangeEvent<HTMLInputElement>
-    ) => {
-        const value = parseFloat(event.target.value);
-        setSilenceThreshold(value);
-        document.getElementById("silenceThresholdValue")!.textContent =
-            value.toFixed(1);
-        chrome.storage.local.set({ silenceThreshold: value });
+        setStateFunction(value); // Update the state variable
+        chrome.storage.local.set({ [storageKey]: value }); // Update the storage
     };
 
     useEffect(() => {
-        chrome.runtime.onMessage.addListener(
-            (message, sender, sendResponse) => {
-                if (message.action === "updateVolumeMeter") {
-                    setVideoVolume(message.volume.toFixed(2));
-                }
+        const updateExtensionState = (data: any) => {
+            setNormalPlaybackRate(data.normalPlaybackRate || 1);
+            setSilentPlaybackRate(data.silentPlaybackRate || 1);
+            setSilenceThreshold(data.silenceThreshold || -14);
+            setExtensionEnabled(data.extensionEnabled || false);
+        };
+
+        chrome.runtime.onMessage.addListener((message) => {
+            if (message.action === "updateVolumeMeter") {
+                setVideoVolume(message.volume.toFixed(2));
             }
-        );
-        // Initialise the current values from extension storage on component mount
+        });
+
         chrome.storage.local.get(
             [
                 "normalPlaybackRate",
@@ -89,57 +82,13 @@ export default function App() {
                 "silenceThreshold",
                 "extensionEnabled"
             ],
-            (data) => {
-                const normalRate = data.normalPlaybackRate || 1;
-                const silentRate = data.silentPlaybackRate || 1;
-                const threshold = data.silenceThreshold || -14;
-                const enabled = data.extensionEnabled || false;
-
-                // Update state and UI sliders
-                setNormalPlaybackRate(normalRate);
-                setSilentPlaybackRate(silentRate);
-                setSilenceThreshold(threshold);
-                setExtensionEnabled(enabled);
-
-                // Cast HTMLElement to HTMLInputElement to access the 'value' property
-                (
-                    document.getElementById(
-                        "normalPlaybackRate"
-                    ) as HTMLInputElement
-                ).value = normalRate.toString();
-                (
-                    document.getElementById(
-                        "normalPlaybackValue"
-                    ) as HTMLElement
-                ).textContent = normalRate.toFixed(1);
-
-                (
-                    document.getElementById(
-                        "silentPlaybackRate"
-                    ) as HTMLInputElement
-                ).value = silentRate.toString();
-                (
-                    document.getElementById(
-                        "silentPlaybackValue"
-                    ) as HTMLElement
-                ).textContent = silentRate.toFixed(1);
-
-                (
-                    document.getElementById(
-                        "silenceThreshold"
-                    ) as HTMLInputElement
-                ).value = threshold.toString();
-                (
-                    document.getElementById(
-                        "silenceThresholdValue"
-                    ) as HTMLElement
-                ).textContent = threshold.toFixed(1);
-            }
+            (data) => updateExtensionState(data)
         );
     }, []);
 
     return (
         <div className="flex flex-col justify-center min-h-screen bg-gray-800 text-white">
+            {/* Header */}
             <div className="container flex flex-row justify-center items-center self-center">
                 <img
                     src="icons/active.png"
@@ -170,6 +119,7 @@ export default function App() {
                     Lecture Master
                 </h1>
             </div>
+            {/* Extension Toggle */}
             <div className="container flex flex-row justify-center items-center mt-5 ml-8">
                 <h3 className="text-base">Enable Lecture Master</h3>
                 <button
@@ -201,6 +151,7 @@ export default function App() {
                         : "duration-300"
                 }`}
             >
+                <hr className="w-full h-0.5 my-4 bg-white opacity-25 rounded" />
                 {/* Silence Threshold */}
                 <div className="flex flex-col">
                     <div className="flex flex-row justify-between items-center">
@@ -214,7 +165,7 @@ export default function App() {
                             </label>
                         </div>
                         <div className="text-dim-orange">
-                            <span id="silenceThresholdValue">-14</span>dB
+                            <span>{silenceThreshold.toFixed(1)}</span>dB
                         </div>
                     </div>
                     <div
@@ -226,22 +177,22 @@ export default function App() {
                         type="range"
                         id="silenceThreshold"
                         className="w-64 mt-2 mb-1 form-range appearance-none bg-gray-600 h-6 rounded-full slider-no-handle z-10"
-                        style={{
-                            backgroundImage: `linear-gradient(to right, #f09d51 0%, #f09d51 ${calculateSliderPercentage(
-                                silenceThreshold,
-                                -24,
-                                0
-                            )}%, #313638 ${calculateSliderPercentage(
-                                silenceThreshold,
-                                -24,
-                                0
-                            )}%, #313638 100%)`
-                        }}
+                        style={generateSliderBackgroundStyle(
+                            silenceThreshold,
+                            -24,
+                            0
+                        )}
                         min="-24"
                         max="0"
                         step="0.1"
                         defaultValue="-14"
-                        onChange={handleSilenceThresholdChange}
+                        onChange={(event) =>
+                            handleInputChange(
+                                event,
+                                setSilenceThreshold,
+                                "silenceThreshold"
+                            )
+                        }
                     />
                     <div className="flex justify-between w-full text-white">
                         <span>-24dB</span>
@@ -262,38 +213,36 @@ export default function App() {
                             </label>
                         </div>
                         <div className="text-dim-orange">
-                            <span id="normalPlaybackValue">1</span>x
+                            <span>{normalPlaybackRate.toFixed(1)}</span>x
                         </div>
                     </div>
                     <input
                         type="range"
                         id="normalPlaybackRate"
                         className="w-64 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full slider-no-handle"
-                        style={{
-                            backgroundImage: `linear-gradient(to right, #f09d51 0%, #f09d51 ${calculateSliderPercentage(
-                                normalPlaybackRate,
-                                0.1,
-                                5
-                            )}%, #313638 ${calculateSliderPercentage(
-                                normalPlaybackRate,
-                                0.1,
-                                5
-                            )}%, #313638 100%)`
-                        }}
+                        style={generateSliderBackgroundStyle(
+                            normalPlaybackRate,
+                            0.1,
+                            5
+                        )}
                         min="0.1"
                         max="5"
                         step="0.1"
                         defaultValue="1"
-                        onChange={handleNormalPlaybackRateChange}
+                        onChange={(event) =>
+                            handleInputChange(
+                                event,
+                                setNormalPlaybackRate,
+                                "normalPlaybackRate"
+                            )
+                        }
                     />
                     <div className="flex justify-between w-full text-white">
                         <span>0.1x</span>
                         <span>5x</span>
                     </div>
                 </div>
-
                 <hr className="w-full h-0.5 my-4 bg-white opacity-25 rounded" />
-
                 {/* Silent Speed */}
                 <div className="flex flex-col">
                     <div className="flex flex-row justify-between items-center">
@@ -307,29 +256,29 @@ export default function App() {
                             </label>
                         </div>
                         <div className="text-dim-orange">
-                            <span id="silentPlaybackValue">1</span>x
+                            <span>{silentPlaybackRate.toFixed(1)}</span>x
                         </div>
                     </div>
                     <input
                         type="range"
                         id="silentPlaybackRate"
                         className="w-64 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full slider-no-handle"
-                        style={{
-                            backgroundImage: `linear-gradient(to right, #f09d51 0%, #f09d51 ${calculateSliderPercentage(
-                                silentPlaybackRate,
-                                0.1,
-                                5
-                            )}%, #313638 ${calculateSliderPercentage(
-                                silentPlaybackRate,
-                                0.1,
-                                5
-                            )}%, #313638 100%)`
-                        }}
+                        style={generateSliderBackgroundStyle(
+                            silentPlaybackRate,
+                            0.1,
+                            5
+                        )}
                         min="0.1"
                         max="5"
                         step="0.1"
                         defaultValue="1"
-                        onChange={handleSilentPlaybackRateChange}
+                        onChange={(event) =>
+                            handleInputChange(
+                                event,
+                                setSilentPlaybackRate,
+                                "silentPlaybackRate"
+                            )
+                        }
                     />
                     <div className="flex justify-between w-full text-white">
                         <span>0.1x</span>
@@ -337,7 +286,7 @@ export default function App() {
                     </div>
                 </div>
             </div>
-
+            {/* Footer */}
             <div className="text-white mt-5 self-center">
                 Developed by{" "}
                 <a
