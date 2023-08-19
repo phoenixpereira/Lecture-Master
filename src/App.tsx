@@ -219,13 +219,13 @@ export default function App() {
                     </div>
                     <div
                         id="volumeMeter"
-                        className="w-[16.65rem] h-8 bg-gray-600 rounded-full absolute -translate-x-[0.325rem] translate-y-[1.125rem] "
+                        className="w-[16.65rem] h-8 bg-gray-600 rounded-full absolute -translate-x-[0.325rem] translate-y-[1.35rem]"
                         style={volumeMeterFill}
                     ></div>
                     <input
                         type="range"
                         id="silenceThreshold"
-                        className="w-64 mt-1 form-range appearance-none bg-gray-600 h-6 rounded-full slider-no-handle z-10"
+                        className="w-64 mt-2 mb-1 form-range appearance-none bg-gray-600 h-6 rounded-full slider-no-handle z-10"
                         style={{
                             backgroundImage: `linear-gradient(to right, #f09d51 0%, #f09d51 ${calculateSliderPercentage(
                                 silenceThreshold,
