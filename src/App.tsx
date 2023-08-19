@@ -19,9 +19,13 @@ export default function App() {
         return ((value - min) / (max - min)) * 100;
     }
 
-    // Calculate the volume meter fill percentage based on the video's volume
+    const isAudioSkipping = videoVolume < silenceThreshold;
     const volumeMeterFill = {
-        backgroundImage: `linear-gradient(to right, #B3FFB3 0%, #B3FFB3 ${calculateSliderPercentage(
+        backgroundImage: `linear-gradient(to right, ${
+            isAudioSkipping ? "#B3FFB3" : "#f06543"
+        } 0%, ${
+            isAudioSkipping ? "#B3FFB3" : "#f06543"
+        } ${calculateSliderPercentage(
             videoVolume,
             -24,
             0
