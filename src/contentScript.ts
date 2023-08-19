@@ -24,6 +24,8 @@ let audioContextInitialised = false;
 let normalPlaybackRate = 1;
 let silentPlaybackRate = 1;
 
+let isExtensionEnabled = false;
+
 // Create the audio context and gain node
 function createAudioContext() {
     audioContext = new window.AudioContext();
@@ -33,12 +35,18 @@ function createAudioContext() {
 // Get the video volume and adjust playback rate
 function getVideoVolume(video: HTMLMediaElement) {
     chrome.storage.local.get(
-        ["normalPlaybackRate", "silentPlaybackRate", "silenceThreshold"],
+        [
+            "normalPlaybackRate",
+            "silentPlaybackRate",
+            "silenceThreshold",
+            "extensionEnabled"
+        ],
         (data) => {
             normalPlaybackRate = data.normalPlaybackRate || 1;
             silentPlaybackRate = data.silentPlaybackRate || 1;
             silenceThreshold = data.silenceThreshold || -5.9;
             targetPlaybackRate = normalPlaybackRate;
+            isExtensionEnabled = data.extensionEnabled;
         }
     );
 
@@ -90,26 +98,38 @@ function getVideoVolume(video: HTMLMediaElement) {
         silenceCounter++;
     }
 
-    if (!isPausedOrEnded) {
+    if (!isPausedOrEnded && !isExtensionEnabled) {
+        chrome.runtime.sendMessage({ action: "setIconActive" });
+        chrome.runtime.sendMessage({
+            action: "updateVolumeMeter",
+            volume: volumeInDecibels
+        });
         setTimeout(() => {
             getVideoVolume(video);
-        }, 200); // Run the function again after 200 milliseconds
+        }, 200); // Run the function again after 20 milliseconds
+    } else {
+        chrome.runtime.sendMessage({ action: "setIconInactive" });
     }
 }
 
 // Handle video events (play, pause, ended)
 function handleVideoEvents(event: Event) {
-    const video = event.target as HTMLMediaElement;
-
-    if (video.paused || video.ended) {
-        isPausedOrEnded = true;
-    } else {
-        if (!audioContextInitialised) {
-            createAudioContext();
-            audioContextInitialised = true;
+    chrome.storage.local.get(["extensionEnabled"], (data) => {
+        isExtensionEnabled = data.extensionEnabled;
+    });
+    if (!isExtensionEnabled) {
+        const video = event.target as HTMLMediaElement;
+        // Check if the extension is enabled
+        if (video.paused || video.ended) {
+            isPausedOrEnded = true;
+        } else {
+            if (!audioContextInitialised) {
+                createAudioContext();
+                audioContextInitialised = true;
+            }
+            isPausedOrEnded = false;
+            getVideoVolume(video);
         }
-        isPausedOrEnded = false;
-        getVideoVolume(video);
     }
 }
 
