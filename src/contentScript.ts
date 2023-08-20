@@ -23,8 +23,10 @@ let requiredSilenceFrames: number = 3;
 let audioContextInitialised = false;
 let normalPlaybackRate = 1;
 let silentPlaybackRate = 1;
+let volumeInDecibels = 0;
 
 let isExtensionEnabled = false;
+let getVideoVolumeCount = 0;
 
 // Create the audio context and gain node
 function createAudioContext() {
@@ -76,15 +78,13 @@ function getVideoVolume(video: HTMLMediaElement) {
     const normalizedAmplitude = averageAmplitude / 255;
 
     // Calculate the volume in decibels using the normalized amplitude
-    const volumeInDecibels = 10 * Math.log10(normalizedAmplitude);
-    console.log(
-        "Actual Volume: ",
-        volumeInDecibels,
-        "Threshold: ",
-        silenceThreshold,
-        "Speed: ",
-        videoElement!.playbackRate
-    );
+    const volumeInDecibelsMeter = 10 * Math.log10(normalizedAmplitude);
+    if (getVideoVolumeCount == 4) {
+        volumeInDecibels = volumeInDecibelsMeter;
+        getVideoVolumeCount = 0;
+    } else {
+        getVideoVolumeCount++;
+    }
 
     if (volumeInDecibels >= silenceThreshold) {
         silenceCounter = 0;
@@ -102,11 +102,11 @@ function getVideoVolume(video: HTMLMediaElement) {
         chrome.runtime.sendMessage({ action: "setIconActive" });
         chrome.runtime.sendMessage({
             action: "updateVolumeMeter",
-            volume: volumeInDecibels
+            volume: volumeInDecibelsMeter
         });
         setTimeout(() => {
             getVideoVolume(video);
-        }, 200); // Run the function again after 20 milliseconds
+        }, 50); // Run the function again after 50 milliseconds
     } else {
         chrome.runtime.sendMessage({ action: "setIconInactive" });
     }

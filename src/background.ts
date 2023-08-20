@@ -18,6 +18,7 @@ function setIconInactive() {
     });
 }
 
+// Listen for messages
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === "setIconActive") {
         setIconActive();
