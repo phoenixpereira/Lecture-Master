@@ -24,6 +24,31 @@ jobs:
             - name: Build the code
               run: yarn build
 
+            - name: Archive build
+              run: |
+                  zip -r Lecture-Master.zip build/
+              working-directory: ${{ github.workspace }}
+
+            - name: Upload build artifact
+              id: upload-build-artifact
+              uses: actions/upload-artifact@v3
+              with:
+                  name: Lecture-Master-build-${{ steps.read_version.outputs.version }}
+                  path: Lecture-Master.zip
+
+    release:
+        needs: build
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "18"
+
             - name: Read VERSION.md
               id: read_version
               run: |
@@ -33,14 +58,6 @@ jobs:
                   echo "::set-output name=version::$VERSION"
                   echo "::set-output name=description::$DESCRIPTION"
               shell: bash
-
-            - name: Archive artifacts
-              run: |
-                  mkdir artifacts
-                  cp -r build artifacts/
-                  cp -r src artifacts/
-                  zip -r Lecture-Master.zip artifacts/
-              working-directory: ${{ github.workspace }}
 
             - name: Create Release
               id: create_release
@@ -56,9 +73,9 @@ jobs:
                   draft: false
                   prerelease: false
 
-            - name: Upload assets
-              id: upload-assets
+            - name: Upload release assets
+              id: upload-release-assets
               uses: actions/upload-artifact@v3
               with:
-                  name: Lecture-Master v${{ steps.read_version.outputs.version }}
-                  path: artifacts/Lecture-Master.zip
+                  name: Lecture-Master-release-${{ steps.read_version.outputs.version }}
+                  path: Lecture-Master.zip
