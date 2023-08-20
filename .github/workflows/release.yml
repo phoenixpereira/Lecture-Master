@@ -24,9 +24,21 @@ jobs:
             - name: Build the code
               run: yarn build
 
+            - name: Read VERSION.md
+              id: read_version
+              run: |
+                  VERSION_CONTENT=$(cat VERSION.md)
+                  VERSION=$(echo "$VERSION_CONTENT" | grep -oP '(?<=Version )\d+\.\d+')
+                  DESCRIPTION=$(echo "$VERSION_CONTENT" | grep -oP '(?<=Description: ).*')
+                  echo "::set-output name=version::$VERSION"
+                  echo "::set-output name=description::$DESCRIPTION"
+              shell: bash
+
             - name: Archive build
               run: |
-                  zip -r Lecture-Master.zip build/
+                  mkdir artifacts
+                  cp -r build artifacts/
+                  zip -r Lecture-Master.zip artifacts/
               working-directory: ${{ github.workspace }}
 
             - name: Upload build artifact
@@ -44,11 +56,6 @@ jobs:
             - name: Checkout code
               uses: actions/checkout@v3
 
-            - name: Set up Node.js
-              uses: actions/setup-node@v3
-              with:
-                  node-version: "18"
-
             - name: Read VERSION.md
               id: read_version
               run: |
@@ -58,6 +65,12 @@ jobs:
                   echo "::set-output name=version::$VERSION"
                   echo "::set-output name=description::$DESCRIPTION"
               shell: bash
+
+            - name: Download build artifact
+              uses: actions/download-artifact@v3
+              with:
+                  name: Lecture-Master-build-${{ steps.read_version.outputs.version }}
+                  path: artifacts
 
             - name: Create Release
               id: create_release
@@ -75,7 +88,11 @@ jobs:
 
             - name: Upload release assets
               id: upload-release-assets
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
-                  name: Lecture-Master-release-${{ steps.read_version.outputs.version }}
-                  path: Lecture-Master.zip
+                  upload_url: ${{ steps.create_release.outputs.upload_url }}
+                  asset_path: artifacts/Lecture-Master.zip
+                  asset_name: Lecture-Master.zip
+                  asset_content_type: application/zip
