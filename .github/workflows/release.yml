@@ -61,4 +61,4 @@ jobs:
               uses: actions/upload-artifact@v3
               with:
                   name: Lecture-Master v${{ steps.read_version.outputs.version }}
-                  path: Lecture-Master.zip
+                  path: artifacts/Lecture-Master.zip
