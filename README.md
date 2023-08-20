@@ -21,6 +21,10 @@ Open Chrome and navigate to `chrome://extensions/`.
 - Select the `build` folder from the cloned repository or the `Lecture-Master` folder if you downloaded it from releases.
 - The extension should now be loaded and running in your browser.
 
+## Known Issues
+- Doesn't currently support lectures with multiple video sources.
+- Doesn't currently support local videos.
+
 ## Development
 To get started, clone the repository and install the dependencies:
 
