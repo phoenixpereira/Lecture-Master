@@ -43,7 +43,7 @@ jobs:
               run: |
                   mkdir Lecture-Master
                   cp -r build/* Lecture-Master/
-                  zip -r Lecture-Master.zip Lecture-Master/
+                  zip -r Lecture-Master-v${{ steps.read_version.outputs.version }}.zip Lecture-Master/
               working-directory: ${{ github.workspace }}
 
             - name: Create GitHub tag
@@ -53,7 +53,7 @@ jobs:
             - name: Create GitHub release
               uses: softprops/action-gh-release@v1
               with:
-                  files: Lecture-Master.zip
+                  files: Lecture-Master-v${{ steps.read_version.outputs.version }}.zip
                   tag_name: ${{ steps.create_tag.outputs.tag }}
                   release_name: v${{ steps.read_version.outputs.version }}
                   body: ${{ steps.read_version.outputs.description }}
