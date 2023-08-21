@@ -36,9 +36,13 @@ jobs:
 
             - name: Archive build
               run: |
-                  mkdir artifacts
-                  cp -r build artifacts/
-                  zip -r Lecture-Master-v${{ steps.read_version.outputs.version }}.zip artifacts/
+                  cp -r build/* .
+                  zip -r Lecture-Master-v${{ steps.read_version.outputs.version }}.zip *
+              working-directory: ${{ github.workspace }}
+
+            - name: Archive source code
+              run: |
+                  zip -r Lecture-Master-v${{ steps.read_version.outputs.version }}-source.zip .
               working-directory: ${{ github.workspace }}
 
             - name: Upload build artifact
@@ -47,6 +51,13 @@ jobs:
               with:
                   name: Lecture-Master-build-v${{ steps.read_version.outputs.version }}
                   path: Lecture-Master-v${{ steps.read_version.outputs.version }}.zip
+
+            - name: Upload source artifact
+              id: upload-source-artifact
+              uses: actions/upload-artifact@v3
+              with:
+                  name: Lecture-Master-source-v${{ steps.read_version.outputs.version }}
+                  path: Lecture-Master-v${{ steps.read_version.outputs.version }}-source.zip
 
     release:
         needs: build
@@ -72,6 +83,12 @@ jobs:
                   name: Lecture-Master-build-v${{ steps.read_version.outputs.version }}
                   path: artifacts
 
+            - name: Download source artifact
+              uses: actions/download-artifact@v3
+              with:
+                  name: Lecture-Master-source-v${{ steps.read_version.outputs.version }}
+                  path: artifacts
+
             - name: Create Release
               id: create_release
               uses: actions/create-release@v1
@@ -95,4 +112,15 @@ jobs:
                   upload_url: ${{ steps.create_release.outputs.upload_url }}
                   asset_path: artifacts/Lecture-Master-v${{ steps.read_version.outputs.version }}.zip
                   asset_name: Lecture-Master-v${{ steps.read_version.outputs.version }}.zip
+                  asset_content_type: application/zip
+
+            - name: Upload source release asset
+              id: upload-source-release-asset
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: ${{ steps.create_release.outputs.upload_url }}
+                  asset_path: artifacts/Lecture-Master-source-v${{ steps.read_version.outputs.version }}-source.zip
+                  asset_name: Lecture-Master-v${{ steps.read_version.outputs.version }}-source.zip
                   asset_content_type: application/zip
