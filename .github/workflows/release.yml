@@ -8,90 +8,29 @@ on:
 jobs:
     build:
         runs-on: ubuntu-latest
-
+        permissions:
+            contents: write
         steps:
-            - name: Checkout code
-              uses: actions/checkout@v3
+            - uses: actions/checkout@v3
 
-            - name: Set up Node.js
+            - name: Install Node.js
               uses: actions/setup-node@v3
               with:
-                  node-version: "18"
+                  node-version: 18
 
             - name: Install dependencies
-              run: yarn install
-
-            - name: Build the code
-              run: yarn build
-
-            - name: Read VERSION.md
-              id: read_version
-              run: |
-                  VERSION_CONTENT=$(cat VERSION.md)
-                  VERSION=$(echo "$VERSION_CONTENT" | grep -oP '(?<=Version )\d+(\.\d+)+')
-                  DESCRIPTION=$(echo "$VERSION_CONTENT" | grep -oP '(?<=Description: ).*')
-                  echo "::set-output name=version::$VERSION"
-                  echo "::set-output name=description::$DESCRIPTION"
-              shell: bash
-
-            - name: Archive build
-              run: |
-                  cp -r build/* .
-                  zip -r Lecture-Master-v${{ steps.read_version.outputs.version }}.zip * -x "node_modules/*" -x "build/*"
-              working-directory: ${{ github.workspace }}
-
-            - name: Upload build artifact
-              id: upload-build-artifact
-              uses: actions/upload-artifact@v3
+              uses: borales/actions-yarn@v4
+              id: yarn-install
               with:
-                  name: Lecture-Master-build-v${{ steps.read_version.outputs.version }}
-                  path: Lecture-Master-v${{ steps.read_version.outputs.version }}.zip
+                  cmd: install
 
-    release:
-        needs: build
-        runs-on: ubuntu-latest
-
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v3
-
-            - name: Read VERSION.md
-              id: read_version
-              run: |
-                  VERSION_CONTENT=$(cat VERSION.md)
-                  VERSION=$(echo "$VERSION_CONTENT" | grep -oP '(?<=Version )\d+(\.\d+)+')
-                  DESCRIPTION=$(echo "$VERSION_CONTENT" | grep -oP '(?<=Description: ).*')
-                  echo "::set-output name=version::$VERSION"
-                  echo "::set-output name=description::$DESCRIPTION"
-              shell: bash
-
-            - name: Download build artifact
-              uses: actions/download-artifact@v3
+            - name: Create build
+              uses: borales/actions-yarn@v4
               with:
-                  name: Lecture-Master-build-v${{ steps.read_version.outputs.version }}
-                  path: artifacts
+                  cmd: build
 
-            - name: Create Release
-              id: create_release
-              uses: actions/create-release@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            - name: Create GitHub release
+              uses: softprops/action-gh-release@v1
               with:
-                  tag_name: v${{ steps.read_version.outputs.version }}
-                  release_name: v${{ steps.read_version.outputs.version }}
-                  body: |
-                      ${{ steps.read_version.outputs.description }}
-
-                  draft: false
-                  prerelease: false
-
-            - name: Upload release assets
-              id: upload-release-assets
-              uses: actions/upload-release-asset@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                  upload_url: ${{ steps.create_release.outputs.upload_url }}
-                  asset_path: artifacts/Lecture-Master-v${{ steps.read_version.outputs.version }}.zip
-                  asset_name: Lecture-Master-v${{ steps.read_version.outputs.version }}.zip
-                  asset_content_type: application/zip
+                  draft: true
+                  files: build/*.zip
