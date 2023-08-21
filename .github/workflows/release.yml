@@ -37,7 +37,7 @@ jobs:
             - name: Archive build
               run: |
                   cp -r build/* .
-                  zip -r Lecture-Master-v${{ steps.read_version.outputs.version }}.zip *
+                  zip -r Lecture-Master-v${{ steps.read_version.outputs.version }}.zip * -x "node_modules/*"
               working-directory: ${{ github.workspace }}
 
             - name: Upload build artifact
