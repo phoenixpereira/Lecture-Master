@@ -41,9 +41,9 @@ jobs:
 
             - name: Zip build files
               run: |
-                  mkdir Lecture-Master
-                  cp -r build/* Lecture-Master/
-                  zip -r Lecture-Master-v${{ steps.read_version.outputs.version }}.zip Lecture-Master/
+                  mkdir Lecture-Master-v${{ steps.read_version.outputs.version }}
+                  cp -r build/* Lecture-Master-v${{ steps.read_version.outputs.version }}/
+                  zip -r Lecture-Master-v${{ steps.read_version.outputs.version }}.zip Lecture-Master-v${{ steps.read_version.outputs.version }}/
               working-directory: ${{ github.workspace }}
 
             - name: Create GitHub tag
