@@ -2,7 +2,7 @@
 
 A Chrome extension to make watching lectures more efficient!
 
-<img width="317" alt="Lecture Master" src="https://github.com/phoenixpereira/Lecture-Master/assets/47909638/f7acd8d4-66ac-41c9-b3a2-8395e2b6ba2c">
+<img width="317" alt="Lecture-Master" src="https://github.com/phoenixpereira/Lecture-Master/assets/47909638/6741768c-8b48-4ab9-b752-4968c06e5e86">
 
 ## Features
 
