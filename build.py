@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 import shutil
 import subprocess
@@ -36,6 +37,22 @@ def main(argv):
     if len(argv) == 1:
         build_chrome()
         build_firefox()
+    elif len(argv) >= 2:
+        if argv[1] == "prod" and len(argv) == 3:
+            build_prod(argv[2])
+        elif argv[1] == "prod":
+            build_prod()
+        elif argv[1] == "test":
+            build_test()
+        elif argv[1] == "chrome":
+            build_chrome()
+        elif argv[1] == "firefox":
+            build_firefox()
+        else:
+            print("Not a valid option")
+    else:
+        print("Not a valid option")
+
 
 if __name__ == "__main__":
     argv = sys.argv
