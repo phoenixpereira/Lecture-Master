@@ -1,7 +1,7 @@
 {
     "name": "Lecture Master",
     "description": "Makes watching lectures more efficient!",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "manifest_version": 2,
     "permissions": [
         "storage",
