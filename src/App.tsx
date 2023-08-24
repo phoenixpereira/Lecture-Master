@@ -93,7 +93,7 @@ export default function App() {
             {/* Header */}
             <div className="container flex flex-row justify-center items-center self-center">
                 <ExtensionToggle extensionEnabled={extensionEnabled} />
-                <h1 className="text-lg font-bold tracking-tight sm:text-7xl text-center ml-6">
+                <h1 className="text-lg font-bold tracking-tight sm:text-7xl text-center ml-12">
                     Lecture Master
                 </h1>
             </div>
@@ -153,7 +153,7 @@ export default function App() {
                 />
                 <div
                     id="volumeMeter"
-                    className="w-[16.65rem] h-8 bg-gray-600 rounded-full absolute -translate-x-[0.325rem] translate-y-[3.5rem]"
+                    className="w-[16.65rem] h-8 bg-gray-600 rounded-full absolute -translate-x-[0.325rem] translate-y-[3.85rem]"
                     style={volumeMeterFill}
                 ></div>
                 <hr className="w-full h-0.5 my-4 bg-white opacity-25 rounded" />

@@ -5,15 +5,16 @@
 html,
 body,
 #root {
-    height: 30rem;
+    height: 32rem;
     width: 20rem;
+    overflow: hidden;
+    font-size: 1rem;
 }
 
 audio::-webkit-media-controls-panel {
     background-color: white;
 }
 
-/* Hide the default slider handle */
 .slider-no-handle::-webkit-slider-thumb {
     opacity: 0;
 }
