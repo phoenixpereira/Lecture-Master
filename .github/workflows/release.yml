@@ -24,9 +24,10 @@ jobs:
               with:
                   cmd: install
 
-            - name: Create builds
-              id: create-builds
-              run: python build.py
+            - name: Create build
+              uses: borales/actions-yarn@v4
+              with:
+                  cmd: build
 
             - name: Read VERSION.md
               id: read_version
@@ -38,15 +39,11 @@ jobs:
                   echo "::set-output name=description::$DESCRIPTION"
               shell: bash
 
-            - name: Make zip files
+            - name: Zip build files
               run: |
-                  mkdir Lecture-Master-chrome-v${{ steps.read_version.outputs.version }}
-                  cp -r build/chrome* Lecture-Master-chrome-v${{ steps.read_version.outputs.version }}/
-                  zip -r Lecture-Master-chrome-v${{ steps.read_version.outputs.version }}.zip Lecture-Master-chrome-v${{ steps.read_version.outputs.version }}/
-
-                  mkdir Lecture-Master-firefox-v${{ steps.read_version.outputs.version }}
-                  cp -r build/* Lecture-Master-firefox-v${{ steps.read_version.outputs.version }}/
-                  zip -r Lecture-Master-firefox-v${{ steps.read_version.outputs.version }}.zip Lecture-Master-firefox-v${{ steps.read_version.outputs.version }}/
+                  mkdir Lecture-Master-v${{ steps.read_version.outputs.version }}
+                  cp -r build/* Lecture-Master-v${{ steps.read_version.outputs.version }}/
+                  zip -r Lecture-Master-v${{ steps.read_version.outputs.version }}.zip Lecture-Master-v${{ steps.read_version.outputs.version }}/
               working-directory: ${{ github.workspace }}
 
             - name: Create GitHub tag
@@ -56,9 +53,7 @@ jobs:
             - name: Create GitHub release
               uses: softprops/action-gh-release@v1
               with:
-                  files: |
-                      Lecture-Master-chrome-v${{ steps.read_version.outputs.version }}.zip 
-                      Lecture-Master-firefox-v${{ steps.read_version.outputs.version }}.zip
+                  files: Lecture-Master-v${{ steps.read_version.outputs.version }}.zip
                   tag_name: ${{ steps.create_tag.outputs.tag }}
                   release_name: v${{ steps.read_version.outputs.version }}
                   body: ${{ steps.read_version.outputs.description }}
