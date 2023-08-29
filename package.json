@@ -1,14 +1,13 @@
 {
     "name": "lecture-master",
     "private": true,
-    "version": "1.1.0",
+    "version": "1.1.1",
     "type": "module",
     "main": "src/index.tsx",
     "scripts": {
         "clean": "rm -rf node_modules/ build/",
         "build-chrome": "vite build --mode chrome",
-        "build-firefox": "vite build --mode firefox",
-        "preview": "vite preview"
+        "build-firefox": "vite build --mode firefox"
     },
     "dependencies": {
         "@headlessui/react": "^1.7.13",
