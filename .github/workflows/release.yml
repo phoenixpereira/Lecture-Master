@@ -33,7 +33,7 @@ jobs:
               run: |
                   VERSION_CONTENT=$(cat VERSION.md)
                   VERSION=$(echo "$VERSION_CONTENT" | grep -oP '(?<=Version )\d+(\.\d+)+')
-                  DESCRIPTION=$(echo "$VERSION_CONTENT" | grep -oP '(?<=Description: ).*')
+                  DESCRIPTION=$(echo "$VERSION_CONTENT" | grep -oP '(?<=Description:\n)[\s\S]*')
                   echo "::set-output name=version::$VERSION"
                   echo "::set-output name=description::$DESCRIPTION"
               shell: bash

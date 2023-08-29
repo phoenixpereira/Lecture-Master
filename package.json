@@ -1,18 +1,18 @@
 {
     "name": "lecture-master",
     "private": true,
-    "version": "1.1.0",
+    "version": "1.1.1",
     "type": "module",
     "main": "src/index.tsx",
     "scripts": {
         "clean": "rm -rf node_modules/ build/",
         "build-chrome": "vite build --mode chrome",
-        "build-firefox": "vite build --mode firefox",
-        "preview": "vite preview"
+        "build-firefox": "vite build --mode firefox"
     },
     "dependencies": {
         "@headlessui/react": "^1.7.13",
         "@types/chrome": "^0.0.243",
+        "@types/firefox-webext-browser": "^111.0.1",
         "@xenova/transformers": "^2.2.0",
         "axios": "^1.3.4",
         "react": "^18.2.0",
