@@ -30,7 +30,6 @@ Open Firefox and navigate to `about:addons`.
 - The extension should now be loaded and running in your browser.
   
 ## Known Issues
-- Doesn't currently support lectures with multiple video sources.
 - Doesn't currently support local videos.
 
 ## Development
