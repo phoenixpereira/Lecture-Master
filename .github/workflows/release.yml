@@ -40,13 +40,19 @@ jobs:
 
             - name: Make zip files
               run: |
-                  mkdir Lecture-Master-chrome-v${{ steps.read_version.outputs.version }}
-                  cp -r build/chrome* Lecture-Master-chrome-v${{ steps.read_version.outputs.version }}/
-                  zip -r Lecture-Master-chrome-v${{ steps.read_version.outputs.version }}.zip Lecture-Master-chrome-v${{ steps.read_version.outputs.version }}/
+                  version=${{ steps.read_version.outputs.version }}
 
-                  mkdir Lecture-Master-firefox-v${{ steps.read_version.outputs.version }}
-                  cp -r build/* Lecture-Master-firefox-v${{ steps.read_version.outputs.version }}/
-                  zip -r Lecture-Master-firefox-v${{ steps.read_version.outputs.version }}.zip Lecture-Master-firefox-v${{ steps.read_version.outputs.version }}/
+                  mkdir -p Lecture-Master-chrome-v$version
+                  cp -r build/chrome* Lecture-Master-chrome-v$version/
+                  mv Lecture-Master-chrome-v$version/chrome/* Lecture-Master-chrome-v$version/
+                  rm -r Lecture-Master-chrome-v$version/chrome
+                  zip -r Lecture-Master-chrome-v$version.zip Lecture-Master-chrome-v$version
+
+                  mkdir -p Lecture-Master-firefox-v$version
+                  cp -r build/firefox* Lecture-Master-firefox-v$version/
+                  mv Lecture-Master-firefox-v$version/firefox/* Lecture-Master-firefox-v$version/
+                  rm -r Lecture-Master-firefox-v$version/firefox
+                  zip -r Lecture-Master-firefox-v$version.zip Lecture-Master-firefox-v$version
               working-directory: ${{ github.workspace }}
 
             - name: Create GitHub tag
