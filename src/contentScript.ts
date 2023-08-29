@@ -9,6 +9,8 @@ let isPausedOrEnded: boolean = false;
 let currentPlaybackRate: number = 1;
 let targetPlaybackRate: number = 1;
 let isTransitioning: boolean = false;
+let isExtensionEnabled = false;
+let getVideoVolumeCount = 0;
 
 // Transition settings
 let transitionDuration: number = 0.25; // Duration of the transition in seconds
@@ -25,8 +27,9 @@ let normalPlaybackRate = 1;
 let silentPlaybackRate = 1;
 let volumeInDecibels = 0;
 
-let isExtensionEnabled = false;
-let getVideoVolumeCount = 0;
+// Video elements
+let videoElement: HTMLVideoElement | null = null;
+let videoElements: NodeListOf<HTMLVideoElement>;
 
 // Create the audio context and gain node
 function createAudioContext() {
@@ -75,10 +78,10 @@ function getVideoVolume(video: HTMLMediaElement) {
     const averageAmplitude = sumAmplitude / dataArray.length;
 
     // Normalise the amplitude to a value between 0 and 1
-    const normalizedAmplitude = averageAmplitude / 255;
+    const normalisedAmplitude = averageAmplitude / 255;
 
-    // Calculate the volume in decibels using the normalized amplitude
-    const volumeInDecibelsMeter = 10 * Math.log10(normalizedAmplitude);
+    // Calculate the volume in decibels using the normalised amplitude
+    const volumeInDecibelsMeter = 10 * Math.log10(normalisedAmplitude);
     if (getVideoVolumeCount == 4) {
         volumeInDecibels = volumeInDecibelsMeter;
         getVideoVolumeCount = 0;
@@ -133,20 +136,25 @@ function handleVideoEvents(event: Event) {
     }
 }
 
-// Find the first video element on the page
-let videoElement: HTMLVideoElement | null = null;
-
-// Loops through the mutations in the mutations list and finds video element
+// Loops through the mutations in the mutations list and finds video elements
 const observer = new MutationObserver((mutationsList) => {
     for (const mutation of mutationsList) {
         if (mutation.type === "childList") {
-            videoElement = document.querySelector("video");
+            videoElements = document.querySelectorAll("video");
 
-            if (videoElement) {
-                observer.disconnect();
+            if (videoElements.length > 0) {
+                const videoArray = Array.from(videoElements);
+
+                // Get video element with audio track
+                const lastVideoElement = videoArray[videoArray.length - 1];
+                videoElement = lastVideoElement;
+
+                // Add event listeners
                 videoElement.addEventListener("play", handleVideoEvents);
                 videoElement.addEventListener("pause", handleVideoEvents);
                 videoElement.addEventListener("ended", handleVideoEvents);
+
+                observer.disconnect();
                 break;
             }
         }
