@@ -106,17 +106,17 @@ export default function App() {
 
     return (
         <div className="flex flex-col justify-center min-h-screen bg-gray-800 text-white">
+            {/* Header */}
+            <div className="container flex flex-row justify-center items-center self-center">
+                <ExtensionToggle extensionEnabled={extensionEnabled} />
+                <h1 className="text-lg font-bold tracking-tight sm:text-7xl text-center ml-12">
+                    Lecture Master
+                </h1>
+            </div>
             {isLocalVideo ? (
                 <LocalVideoInfo />
             ) : (
                 <>
-                    {/* Header */}
-                    <div className="container flex flex-row justify-center items-center self-center">
-                        <ExtensionToggle extensionEnabled={extensionEnabled} />
-                        <h1 className="text-lg font-bold tracking-tight sm:text-7xl text-center ml-12">
-                            Lecture Master
-                        </h1>
-                    </div>
                     {/* Extension Toggle */}
                     <div className="container flex flex-row justify-center items-center mt-5 ml-8">
                         <h3 className="text-base">Enable Lecture Master</h3>
@@ -221,20 +221,20 @@ export default function App() {
                             unit="x"
                         />
                     </div>
-                    {/* Footer */}
-                    <div className="text-white mt-5 self-center">
-                        Developed by{" "}
-                        <a
-                            className="underline"
-                            href="https://github.com/phoenixpereira"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            Phoenix Pereira
-                        </a>
-                    </div>
                 </>
             )}
+            {/* Footer */}
+            <div className="text-white mt-5 self-center">
+                Developed by{" "}
+                <a
+                    className="underline"
+                    href="https://github.com/phoenixpereira"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Phoenix Pereira
+                </a>
+            </div>
         </div>
     );
 }
