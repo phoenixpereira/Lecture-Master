@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaPlay, FaFastForward, FaVolumeMute } from "react-icons/fa";
 import Slider from "./components/Slider";
 import ExtensionToggle from "./components/ExtensionToggle";
-import LocalVideoInfo from "./components/localVideoInfo";
+import LocalVideoInfo from "./components/LocalVideoInfo";
 
 let isLocalVideo = false;
 
@@ -13,18 +13,26 @@ export default function App() {
     const [silenceThreshold, setSilenceThreshold] = useState(-14);
     const [extensionEnabled, setExtensionEnabled] = useState(false);
     const [videoVolume, setVideoVolume] = useState(0);
+    const [isLocalVideo, setLocalVideo] = useState(false);
     const isAudioSkipping = videoVolume < silenceThreshold;
 
     // Check if local video open
     chrome.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
         if (tabs[0] && tabs[0].url) {
             const url = new URL(tabs[0].url);
+            let localVideo = false;
+            let tabURL = "";
 
             if (url.protocol === "file:") {
-                isLocalVideo = true;
+                localVideo = true;
             } else {
-                isLocalVideo = false;
+                localVideo = false;
             }
+
+            tabURL = url.protocol;
+            setLocalVideo(localVideo);
+            chrome.storage.local.set({ isLocalVideo: localVideo });
+            chrome.storage.local.set({ tabURL: tabURL });
         }
     });
 
@@ -105,7 +113,7 @@ export default function App() {
     }, []);
 
     return (
-        <div className="flex flex-col justify-center min-h-screen bg-gray-800 text-white">
+        <div className="flex flex-col justify-center min-h-screen bg-gray-800 text-white h-[32rem] w-[20rem]">
             {/* Header */}
             <div className="container flex flex-row justify-center items-center self-center">
                 <ExtensionToggle extensionEnabled={extensionEnabled} />

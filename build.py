@@ -19,8 +19,6 @@ def build_chrome():
         "src/manifests/chrome/manifest.json", "build/chrome/manifest.json"
     )
 
-
-
 def build_firefox():
     subprocess.run("yarn build-firefox", shell=True)
     subprocess.run(

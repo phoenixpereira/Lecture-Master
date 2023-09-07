@@ -1,7 +1,7 @@
 import React from "react";
 
 const LocalPlayerInfo = () => (
-    <div className="local-player-info mx-8 my-10">
+    <div className="local-player-info mx-8 my-10 flex flex-col items-center text-center">
         <p className="text-lg font-semibold">
             You are trying to use Lecture Master with a local video file.
         </p>
@@ -15,7 +15,7 @@ const LocalPlayerInfo = () => (
             normally.
         </p>
         <a
-            href=""
+            href="./index.html"
             className="mt-4 px-4 py-2 bg-bright-orange text-white rounded inline-block"
             target="_blank"
         >
