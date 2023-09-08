@@ -1,7 +1,17 @@
-import React from "react";
-const Player = () => {
-    return (
-        <div className="bg-gray-100 min-h-screen flex flex-col items-center justify-center">
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+        />
+        <title>Document</title>
+    </head>
+    <body>
+        <div
+            className="bg-gray-100 min-h-screen flex flex-col items-center justify-center"
+        >
             <div className="hidden activate-info">
                 <p>You can now activate Lecture Master</p>
             </div>
@@ -22,9 +32,8 @@ const Player = () => {
                         rel="noopener noreferrer"
                         className="text-blue-600 underline"
                     >
-                        Lecture Master extension{" "}
-                    </a>{" "}
-                    in combination with local files.
+                        Lecture Master extension{" "} </a
+                    >{" "} in combination with local files.
                 </p>
                 <p>
                     Simply choose the video you want to watch, then activate
@@ -44,11 +53,10 @@ const Player = () => {
             </div>
             <video
                 controls
-                autoPlay
+                autoplay
                 id="player"
                 className="hidden"
             ></video>
         </div>
-    );
-};
-export default Player;
+    </body>
+</html>

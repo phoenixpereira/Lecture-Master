@@ -15,7 +15,7 @@ const LocalPlayerInfo = () => (
             normally.
         </p>
         <a
-            href="./index.html"
+            href="https://github.com/phoenixpereira/Lecture-Master/blob/main/index.html"
             className="mt-4 px-4 py-2 bg-bright-orange text-white rounded inline-block"
             target="_blank"
         >
