@@ -5,7 +5,6 @@
 html,
 body,
 #root {
-    overflow: hidden;
     font-size: 1rem;
 }
 

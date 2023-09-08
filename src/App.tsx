@@ -17,24 +17,51 @@ export default function App() {
     const isAudioSkipping = videoVolume < silenceThreshold;
 
     // Check if local video open
-    chrome.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-        if (tabs[0] && tabs[0].url) {
-            const url = new URL(tabs[0].url);
-            let localVideo = false;
-            let tabURL = "";
+    if (typeof chrome !== "undefined" && chrome.tabs) {
+        // This is Chrome
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (tabs[0] && tabs[0].url) {
+                const url = new URL(tabs[0].url);
+                let localVideo = false;
+                let tabURL = "";
 
-            if (url.protocol === "file:") {
-                localVideo = true;
-            } else {
-                localVideo = false;
+                if (url.protocol === "file:") {
+                    localVideo = true;
+                } else {
+                    localVideo = false;
+                }
+
+                tabURL = url.protocol;
+                setLocalVideo(localVideo);
+                chrome.storage.local.set({ isLocalVideo: localVideo });
+                chrome.storage.local.set({ tabURL: tabURL });
             }
+        });
+    } else if (typeof browser !== "undefined" && browser.tabs) {
+        // This is Firefox
+        browser.tabs
+            .query({ active: true, currentWindow: true })
+            .then((tabs) => {
+                if (tabs[0] && tabs[0].url) {
+                    const url = new URL(tabs[0].url);
+                    let localVideo = false;
+                    let tabURL = "";
 
-            tabURL = url.protocol;
-            setLocalVideo(localVideo);
-            chrome.storage.local.set({ isLocalVideo: localVideo });
-            chrome.storage.local.set({ tabURL: tabURL });
-        }
-    });
+                    if (url.protocol === "file:") {
+                        localVideo = true;
+                    } else {
+                        localVideo = false;
+                    }
+
+                    tabURL = url.protocol;
+                    setLocalVideo(localVideo);
+                    browser.storage.local.set({ isLocalVideo: localVideo });
+                    browser.storage.local.set({ tabURL: tabURL });
+                }
+            });
+    } else {
+        console.error("Unsupported browser");
+    }
 
     const calculateSliderPercentage = (
         value: number,

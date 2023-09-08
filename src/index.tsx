@@ -6,9 +6,17 @@ import "./css/index.css";
 
 let rootComponent;
 
-// Check if view is a popup or tab
-if (chrome.extension.getViews({ type: "popup" }).length > 0) {
-    // If it's running in the popup context, render App
+if (
+    typeof browser !== "undefined" &&
+    browser.extension.getViews({ type: "popup" }).includes(window)
+) {
+    // If it's running in the popup context in Firefox, render App
+    rootComponent = <App />;
+} else if (
+    typeof chrome !== "undefined" &&
+    chrome.extension.getViews({ type: "popup" }).includes(window)
+) {
+    // If it's running in the popup context in Chrome, render App
     rootComponent = <App />;
 } else {
     // Otherwise (e.g., as a full tab), render Player
