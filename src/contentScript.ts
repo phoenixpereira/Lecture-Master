@@ -148,6 +148,7 @@ const observer = new MutationObserver((mutationsList) => {
                 // Get video element with audio track
                 const lastVideoElement = videoArray[videoArray.length - 1];
                 videoElement = lastVideoElement;
+                console.log(videoElement);
 
                 // Add event listeners
                 videoElement.addEventListener("play", handleVideoEvents);

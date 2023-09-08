@@ -15,7 +15,7 @@ const LocalPlayerInfo = () => (
             normally.
         </p>
         <a
-            href="https://htmlpreview.github.io/?https://github.com/phoenixpereira/Lecture-Master/blob/local-videos/src/Player/player.html"
+            href="./index.html"
             className="mt-4 px-4 py-2 bg-bright-orange text-white rounded inline-block"
             target="_blank"
         >
