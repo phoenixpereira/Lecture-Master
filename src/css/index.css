@@ -8,10 +8,6 @@ body,
     font-size: 1rem;
 }
 
-audio::-webkit-media-controls-panel {
-    background-color: white;
-}
-
 .slider-no-handle::-webkit-slider-thumb {
     opacity: 0;
 }

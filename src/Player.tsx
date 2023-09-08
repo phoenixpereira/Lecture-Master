@@ -15,16 +15,12 @@ function Player() {
             const playerElement = document.querySelector(
                 "#player"
             ) as HTMLElement;
-            const activateInfoElement = document.querySelector(
-                ".activate-info"
-            ) as HTMLElement;
             const dragInfoElement = document.querySelector(
                 ".drag-info"
             ) as HTMLElement;
 
             selectionElement.classList.add("hidden");
             playerElement.classList.remove("hidden");
-            activateInfoElement.classList.remove("hidden");
             dragInfoElement.style.display = "none";
         };
 
@@ -91,43 +87,42 @@ function Player() {
         });
     }, []);
     return (
-        <div className="bg-gray-100 min-h-screen flex flex-col items-center justify-center">
-            <div className="hidden activate-info">
-                <p>You can now activate Lecture Master</p>
-            </div>
-
-            <div className="hidden drag-info">
+        <div className="bg-black min-h-screen flex flex-col items-center justify-center space-y-4">
+            <div className="hidden drag-info text-dim-orange">
                 <p>Drop your video to play it</p>
             </div>
 
             <div className="selection text-center">
-                <h1 className="text-3xl font-bold mb-4">
+                <h1 className="text-3xl font-bold mb-4 text-off-white">
                     Lecture Master Video Player
                 </h1>
-                <p>
+                <p className="text-off-white">
                     This player allows you to use the{" "}
                     <a
-                        href=""
+                        href="https://github.com/phoenixpereira/Lecture-Master"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-600 underline"
+                        className="text-dim-orange"
                     >
-                        Lecture Master extension{" "}
+                        Lecture Master extension
                     </a>{" "}
-                    in combination with local files.
+                    with local files.
                 </p>
-                <p>
-                    Simply choose the video you want to watch, then activate
-                    Lecture Master as normal.
+                <p className="text-off-white">
+                    Just choose the video you want to watch, then use Lecture
+                    Master as normal.
                 </p>
 
                 <div className="file mt-4">
                     <label className="fileContainer">
-                        Choose a video
+                        <span className="text-off-white mt-4 px-8 py-4 bg-bright-orange text-white rounded-full inline-block">
+                            Choose a video
+                        </span>
                         <input
                             type="file"
                             accept="video/*"
                             id="input"
+                            className="hidden"
                         />
                     </label>
                 </div>
