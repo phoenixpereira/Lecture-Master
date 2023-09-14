@@ -3,8 +3,7 @@ import { FaPlay, FaFastForward, FaVolumeMute } from "react-icons/fa";
 import Slider from "./components/Slider";
 import ExtensionToggle from "./components/ExtensionToggle";
 import LocalVideoInfo from "./components/LocalVideoInfo";
-
-let isLocalVideo = false;
+import { Url } from "url";
 
 export default function App() {
     // State variables to hold the current values
@@ -16,49 +15,36 @@ export default function App() {
     const [isLocalVideo, setLocalVideo] = useState(false);
     const isAudioSkipping = videoVolume < silenceThreshold;
 
-    // Check if local video open
-    if (typeof chrome !== "undefined" && chrome.tabs) {
-        // This is Chrome
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            if (tabs[0] && tabs[0].url) {
-                const url = new URL(tabs[0].url);
-                let localVideo = false;
-                let tabURL = "";
+    // Function to handle URL protocol and set isLocalVideo
+    const handleURLProtocol = (url: URL) => {
+        let localVideo = false;
+        if (url.protocol === "file:") {
+            localVideo = true;
+        } else {
+            localVideo = false;
+        }
+        setLocalVideo(localVideo);
+        chrome.storage.local.set({ isLocalVideo: localVideo });
+    };
 
-                if (url.protocol === "file:") {
-                    localVideo = true;
-                } else {
-                    localVideo = false;
-                }
-
-                tabURL = url.protocol;
-                setLocalVideo(localVideo);
-                chrome.storage.local.set({ isLocalVideo: localVideo });
-                chrome.storage.local.set({ tabURL: tabURL });
-            }
-        });
-    } else if (typeof browser !== "undefined" && browser.tabs) {
-        // This is Firefox
+    // Check if the browser is Firefox
+    if (typeof browser !== "undefined") {
         browser.tabs
             .query({ active: true, currentWindow: true })
             .then((tabs) => {
                 if (tabs[0] && tabs[0].url) {
                     const url = new URL(tabs[0].url);
-                    let localVideo = false;
-                    let tabURL = "";
-
-                    if (url.protocol === "file:") {
-                        localVideo = true;
-                    } else {
-                        localVideo = false;
-                    }
-
-                    tabURL = url.protocol;
-                    setLocalVideo(localVideo);
-                    browser.storage.local.set({ isLocalVideo: localVideo });
-                    browser.storage.local.set({ tabURL: tabURL });
+                    handleURLProtocol(url);
                 }
             });
+    } else if (typeof chrome !== "undefined") {
+        // Check if the browser is Chrome
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (tabs[0] && tabs[0].url) {
+                const url = new URL(tabs[0].url);
+                handleURLProtocol(url);
+            }
+        });
     } else {
         console.error("Unsupported browser");
     }

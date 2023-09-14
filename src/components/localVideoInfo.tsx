@@ -1,6 +1,6 @@
 import React from "react";
 
-const LocalPlayerInfo = () => (
+const LocalVideoInfo = () => (
     <div className="local-player-info mx-8 my-10 flex flex-col items-center text-center">
         <p className="text-lg font-semibold">
             You are trying to use Lecture Master with a local video file.
@@ -24,4 +24,4 @@ const LocalPlayerInfo = () => (
     </div>
 );
 
-export default LocalPlayerInfo;
+export default LocalVideoInfo;
