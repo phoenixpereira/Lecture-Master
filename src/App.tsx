@@ -3,7 +3,7 @@ import { FaPlay, FaFastForward, FaVolumeMute } from "react-icons/fa";
 import Slider from "./components/Slider";
 import ExtensionToggle from "./components/ExtensionToggle";
 import LocalVideoInfo from "./components/LocalVideoInfo";
-import { Url } from "url";
+import useBrowser from "./hooks/useBrowser";
 
 export default function App() {
     // State variables to hold the current values
@@ -12,42 +12,8 @@ export default function App() {
     const [silenceThreshold, setSilenceThreshold] = useState(-14);
     const [extensionEnabled, setExtensionEnabled] = useState(false);
     const [videoVolume, setVideoVolume] = useState(0);
-    const [isLocalVideo, setLocalVideo] = useState(false);
     const isAudioSkipping = videoVolume < silenceThreshold;
-
-    // Function to handle URL protocol and set isLocalVideo
-    const handleURLProtocol = (url: URL) => {
-        let localVideo = false;
-        if (url.protocol === "file:") {
-            localVideo = true;
-        } else {
-            localVideo = false;
-        }
-        setLocalVideo(localVideo);
-        chrome.storage.local.set({ isLocalVideo: localVideo });
-    };
-
-    // Check if the browser is Firefox
-    if (typeof browser !== "undefined") {
-        browser.tabs
-            .query({ active: true, currentWindow: true })
-            .then((tabs) => {
-                if (tabs[0] && tabs[0].url) {
-                    const url = new URL(tabs[0].url);
-                    handleURLProtocol(url);
-                }
-            });
-    } else if (typeof chrome !== "undefined") {
-        // Check if the browser is Chrome
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            if (tabs[0] && tabs[0].url) {
-                const url = new URL(tabs[0].url);
-                handleURLProtocol(url);
-            }
-        });
-    } else {
-        console.error("Unsupported browser");
-    }
+    const { isLocalVideo } = useBrowser();
 
     const calculateSliderPercentage = (
         value: number,
