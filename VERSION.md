@@ -1,6 +1,3 @@
-# Version 1.1.1
+# Version 1.2.0
 
-Description: Bug Fixes:
-
--   Now works on Echo360 Lectures with multiple video sources.
--   Firefox icon changes as intended.
+Description: Adds local video support through local video player.
