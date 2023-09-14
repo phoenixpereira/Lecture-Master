@@ -5,14 +5,7 @@
 html,
 body,
 #root {
-    height: 32rem;
-    width: 20rem;
-    overflow: hidden;
     font-size: 1rem;
-}
-
-audio::-webkit-media-controls-panel {
-    background-color: white;
 }
 
 .slider-no-handle::-webkit-slider-thumb {

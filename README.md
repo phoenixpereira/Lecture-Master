@@ -1,6 +1,12 @@
 # Lecture Master
 
-A browser extension to make watching lectures more efficient!
+A browser extension to make watching lectures more efficient! Lecture Master automatically skips silent parts of videos, offering customisable settings and a wide playback range. Built using React, Tailwind CSS, and Vite.
+
+[![React](https://img.shields.io/badge/React-18.2-blue.svg)](https://reactjs.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.2-blue.svg)](https://tailwindcss.com/)
+[![Vite](https://img.shields.io/badge/Vite-4.2-yellowgreen.svg)](https://vitejs.dev/)
+[![GitHub package.json version](https://img.shields.io/github/package-json/v/phoenixpereira/Lecture-Master?color=green)](https://github.com/phoenixpereira/Lecture-Master/releases/latest)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 <img width="317" alt="Lecture-Master" src="https://github.com/phoenixpereira/Lecture-Master/assets/47909638/6741768c-8b48-4ab9-b752-4968c06e5e86">
 
@@ -28,9 +34,6 @@ Open Firefox and navigate to `about:addons`.
 - Select the `Lecture-Master-firefox-vX.X.X.xpi` file you downloaded from releases.
 - When prompted to `Add Lecture Master`, click `Add`
 - The extension should now be loaded and running in your browser.
-  
-## Known Issues
-- Doesn't currently support local videos.
 
 ## Development
 To get started, clone the repository and install the dependencies:
@@ -53,4 +56,5 @@ The optimised and bundled extension will be placed in the build folder.
 If you find any issues with Lecture Master, please open an issue or create a pull request that fixes the issue. Any suggestions or feature requests may also be added to the issues.
 
 ## License
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. 
+See the [LICENSE](LICENSE) file for details.

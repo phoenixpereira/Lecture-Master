@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { FaPlay, FaFastForward, FaVolumeMute } from "react-icons/fa";
 import Slider from "./components/Slider";
 import ExtensionToggle from "./components/ExtensionToggle";
+import LocalVideoInfo from "./components/LocalVideoInfo";
+import useBrowser from "./hooks/useBrowser";
 
 export default function App() {
     // State variables to hold the current values
@@ -11,6 +13,7 @@ export default function App() {
     const [extensionEnabled, setExtensionEnabled] = useState(false);
     const [videoVolume, setVideoVolume] = useState(0);
     const isAudioSkipping = videoVolume < silenceThreshold;
+    const { isLocalVideo } = useBrowser();
 
     const calculateSliderPercentage = (
         value: number,
@@ -89,7 +92,7 @@ export default function App() {
     }, []);
 
     return (
-        <div className="flex flex-col justify-center min-h-screen bg-gray-800 text-white">
+        <div className="flex flex-col justify-center min-h-screen bg-gray-800 text-white h-[32rem] w-[20rem]">
             {/* Header */}
             <div className="container flex flex-row justify-center items-center self-center">
                 <ExtensionToggle extensionEnabled={extensionEnabled} />
@@ -97,110 +100,116 @@ export default function App() {
                     Lecture Master
                 </h1>
             </div>
-            {/* Extension Toggle */}
-            <div className="container flex flex-row justify-center items-center mt-5 ml-8">
-                <h3 className="text-base">Enable Lecture Master</h3>
-                <button
-                    id="extensionToggle"
-                    className={`cursor-pointer relative w-10 h-5 rounded-full ml-2 mr-16 ${
-                        extensionEnabled
-                            ? "bg-gray-100 transition-all duration-300"
-                            : "bg-bright-orange transition-all duration-300"
-                    }`}
-                    style={{ marginLeft: "auto" }}
-                    onClick={handleExtensionToggle}
-                >
-                    <span
-                        className={`w-2/5 h-4/5 absolute rounded-full top-0.5 ${
+            {isLocalVideo ? (
+                <LocalVideoInfo />
+            ) : (
+                <>
+                    {/* Extension Toggle */}
+                    <div className="container flex flex-row justify-center items-center mt-5 ml-8">
+                        <h3 className="text-base">Enable Lecture Master</h3>
+                        <button
+                            id="extensionToggle"
+                            className={`cursor-pointer relative w-10 h-5 rounded-full ml-2 mr-16 ${
+                                extensionEnabled
+                                    ? "bg-gray-100 transition-all duration-300"
+                                    : "bg-bright-orange transition-all duration-300"
+                            }`}
+                            style={{ marginLeft: "auto" }}
+                            onClick={handleExtensionToggle}
+                        >
+                            <span
+                                className={`w-2/5 h-4/5 absolute rounded-full top-0.5 ${
+                                    extensionEnabled
+                                        ? "bg-gray-400 transition-all duration-300"
+                                        : "bg-white transition-all duration-300"
+                                }`}
+                                style={{
+                                    left: extensionEnabled ? "0.3rem" : "50%"
+                                }}
+                            />
+                        </button>
+                    </div>
+                    <div
+                        className={`flex flex-col mt-2 mx-8 ${
                             extensionEnabled
-                                ? "bg-gray-400 transition-all duration-300"
-                                : "bg-white transition-all duration-300"
+                                ? "opacity-50 pointer-events-none duration-300"
+                                : "duration-300"
                         }`}
-                        style={{
-                            left: extensionEnabled ? "0.3rem" : "50%"
-                        }}
-                    />
-                </button>
-            </div>
-            <div
-                className={`flex flex-col mt-2 mx-8 ${
-                    extensionEnabled
-                        ? "opacity-50 pointer-events-none duration-300"
-                        : "duration-300"
-                }`}
-            >
-                <hr className="w-full h-0.5 my-4 bg-white opacity-25 rounded" />
-                {/* Silence Threshold */}
-                <Slider
-                    value={silenceThreshold}
-                    minValue={-24}
-                    maxValue={0}
-                    onChange={(event) =>
-                        handleInputChange(
-                            event,
-                            setSilenceThreshold,
-                            "silenceThreshold"
-                        )
-                    }
-                    backgroundStyle={generateSliderBackgroundStyle(
-                        silenceThreshold,
-                        -24,
-                        0
-                    )}
-                    icon={<FaVolumeMute className="mr-3 mt-1" />}
-                    label="Silence Threshold"
-                    unit="dB"
-                />
-                <div
-                    id="volumeMeter"
-                    className="w-[16.65rem] h-8 bg-gray-600 rounded-full absolute -translate-x-[0.325rem] translate-y-[3.85rem]"
-                    style={volumeMeterFill}
-                ></div>
-                <hr className="w-full h-0.5 my-4 bg-white opacity-25 rounded" />
-                {/* Normal Speed */}
-                <Slider
-                    value={normalPlaybackRate}
-                    minValue={0.1}
-                    maxValue={5}
-                    onChange={(event) =>
-                        handleInputChange(
-                            event,
-                            setNormalPlaybackRate,
-                            "normalPlaybackRate"
-                        )
-                    }
-                    backgroundStyle={generateSliderBackgroundStyle(
-                        normalPlaybackRate,
-                        0.1,
-                        5
-                    )}
-                    icon={<FaPlay className="mr-3 mt-1" />}
-                    label="Normal Speed"
-                    unit="x"
-                />
-                <hr className="w-full h-0.5 my-4 bg-white opacity-25 rounded" />
-                {/* Silent Speed */}
-                <Slider
-                    value={silentPlaybackRate}
-                    minValue={0.1}
-                    maxValue={5}
-                    onChange={(event) =>
-                        handleInputChange(
-                            event,
-                            setSilentPlaybackRate,
-                            "silentPlaybackRate"
-                        )
-                    }
-                    backgroundStyle={generateSliderBackgroundStyle(
-                        silentPlaybackRate,
-                        0.1,
-                        5
-                    )}
-                    icon={<FaFastForward className="mr-3 mt-1" />}
-                    label="Silent Speed"
-                    unit="x"
-                />
-            </div>
+                    >
+                        <hr className="w-full h-0.5 my-4 bg-white opacity-25 rounded" />
+                        {/* Silence Threshold */}
+                        <Slider
+                            value={silenceThreshold}
+                            minValue={-24}
+                            maxValue={0}
+                            onChange={(event) =>
+                                handleInputChange(
+                                    event,
+                                    setSilenceThreshold,
+                                    "silenceThreshold"
+                                )
+                            }
+                            backgroundStyle={generateSliderBackgroundStyle(
+                                silenceThreshold,
+                                -24,
+                                0
+                            )}
+                            icon={<FaVolumeMute className="mr-3 mt-1" />}
+                            label="Silence Threshold"
+                            unit="dB"
+                        />
+                        <div
+                            id="volumeMeter"
+                            className="w-[16.65rem] h-8 bg-gray-600 rounded-full absolute -translate-x-[0.325rem] translate-y-[3.85rem]"
+                            style={volumeMeterFill}
+                        ></div>
+                        <hr className="w-full h-0.5 my-4 bg-white opacity-25 rounded" />
+                        {/* Normal Speed */}
+                        <Slider
+                            value={normalPlaybackRate}
+                            minValue={0.1}
+                            maxValue={5}
+                            onChange={(event) =>
+                                handleInputChange(
+                                    event,
+                                    setNormalPlaybackRate,
+                                    "normalPlaybackRate"
+                                )
+                            }
+                            backgroundStyle={generateSliderBackgroundStyle(
+                                normalPlaybackRate,
+                                0.1,
+                                5
+                            )}
+                            icon={<FaPlay className="mr-3 mt-1" />}
+                            label="Normal Speed"
+                            unit="x"
+                        />
+                        <hr className="w-full h-0.5 my-4 bg-white opacity-25 rounded" />
+                        {/* Silent Speed */}
+                        <Slider
+                            value={silentPlaybackRate}
+                            minValue={0.1}
+                            maxValue={5}
+                            onChange={(event) =>
+                                handleInputChange(
+                                    event,
+                                    setSilentPlaybackRate,
+                                    "silentPlaybackRate"
+                                )
+                            }
+                            backgroundStyle={generateSliderBackgroundStyle(
+                                silentPlaybackRate,
+                                0.1,
+                                5
+                            )}
+                            icon={<FaFastForward className="mr-3 mt-1" />}
+                            label="Silent Speed"
+                            unit="x"
+                        />
+                    </div>
+                </>
+            )}
             {/* Footer */}
             <div className="text-white mt-5 self-center">
                 Developed by{" "}
